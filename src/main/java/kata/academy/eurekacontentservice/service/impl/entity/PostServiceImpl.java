@@ -32,7 +32,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post findPostByPostId(Long id) {
-
         return repository.findPostById(id);
     }
 }
