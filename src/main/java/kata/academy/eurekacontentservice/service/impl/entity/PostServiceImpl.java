@@ -6,7 +6,6 @@ import kata.academy.eurekacontentservice.service.abst.entity.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,12 +31,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Optional<Post> findPostByPostId(Long id) {
-        return repository.findPostById(id);
-    }
+    public Post findPostByPostId(Long id) {
 
-    @Override
-    public Optional<Post> findPostByUserId(Long userId) {
-        return repository.findPostByUserid(userId);
+        return repository.findPostById(id);
     }
 }

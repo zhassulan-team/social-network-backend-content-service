@@ -8,7 +8,7 @@ public interface PostService {
     Post addPost(Post post);
     Post updatePost(Post post);
     void deletePostById(Long id);
-    Optional<Post> findPostByPostId(Long postId);
-    Optional<Post> findPostByUserId (Long userId);
+    Post findPostByPostId(Long postId);
+
 
 }
