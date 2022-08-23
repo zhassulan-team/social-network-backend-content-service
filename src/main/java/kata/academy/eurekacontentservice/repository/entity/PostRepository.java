@@ -12,10 +12,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 
     @Query("""
-            SELECT p
-            FROM Post p JOIN FETCH p.tags
-            WHERE p.id = :id 
+            SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
+            FROM Post p
+            WHERE p.userId =:userId AND p.id=:postId
             """)
-    Post findPostById(@Param("id") Long id);
+    boolean existsPostByIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);
+
+
+
 
 }
