@@ -1,15 +1,15 @@
 package kata.academy.eurekacontentservice.model.converter;
 
-import kata.academy.eurekacontentservice.model.dto.request.PostPersistRequestDto;
-import kata.academy.eurekacontentservice.model.dto.request.PostUpdateRequestDto;
+import kata.academy.eurekacontentservice.model.dto.PostPersistRequestDto;
+import kata.academy.eurekacontentservice.model.dto.PostUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Post;
 
 public final class PostMapper {
 
+    private PostMapper() {
+    }
 
-    private PostMapper() {}
-
-    public static Post toEntity(PostPersistRequestDto dto){
+    public static Post toEntity(PostPersistRequestDto dto) {
         Post post = new Post();
         post.setTitle(dto.title());
         post.setText(dto.text());
@@ -17,7 +17,7 @@ public final class PostMapper {
         return post;
     }
 
-    public static Post toEntity(PostUpdateRequestDto dto){
+    public static Post toEntity(PostUpdateRequestDto dto) {
         Post post = new Post();
         post.setTitle(dto.title());
         post.setText(dto.text());
