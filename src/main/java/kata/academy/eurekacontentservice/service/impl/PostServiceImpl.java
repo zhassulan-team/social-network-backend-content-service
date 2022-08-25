@@ -34,4 +34,10 @@ public class PostServiceImpl implements PostService {
     public boolean existsByIdAndUserId(Long postId, Long userId) {
         return postRepository.existsByIdAndUserId(postId, userId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existsById(Long postId) {
+        return postRepository.existsById(postId);
+    }
 }
