@@ -14,5 +14,5 @@ public interface CommentService {
 
     Optional<Comment> findByUserIdAndPostId(Long userId, Long postId);
 
-    Optional<Comment> findByUserIdAndPostIdAndCommentId(Long userId, Long postId, Long commentId);
+    Optional<Comment> findByUserIdAndPostIdAndId(Long userId, Long postId, Long commentId);
 }

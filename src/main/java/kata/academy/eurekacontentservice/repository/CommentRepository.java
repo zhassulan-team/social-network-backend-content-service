@@ -10,6 +10,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Optional<Comment> findByUserIdAndPostId(Long userId, Long postId);
 
-    Optional<Comment> findByUserIdAndPostIdAndCommentId(Long userId, Long postId, Long commentId);
-
+    Optional<Comment> findByUserIdAndPostIdAndId(Long userId, Long postId, Long commentId);
+    @Override
+    Optional<Comment> findById(Long commentId);
 }

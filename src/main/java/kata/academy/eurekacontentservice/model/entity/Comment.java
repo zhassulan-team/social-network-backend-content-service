@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +28,7 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long id;
 
 
     @NotNull
@@ -44,14 +45,16 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id.equals(comment.id) && userId.equals(comment.userId) && text.equals(comment.text) && post.equals(comment.post);
+    }
 
     @Override
-    public String toString() {
-        return "Comment{" +
-                "commentId=" + commentId +
-                ", userId=" + userId +
-                ", text='" + text + '\'' +
-                ", post=" + post +
-                '}';
+    public int hashCode() {
+        return Objects.hash(id, userId, text, post);
     }
 }
