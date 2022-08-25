@@ -10,6 +10,7 @@ import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentPersistRequestDto;
 import kata.academy.eurekacontentservice.model.dto.CommentUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
+import kata.academy.eurekacontentservice.service.PostService;
 import kata.academy.eurekacontentservice.service.entity.CommentService;
 import kata.academy.eurekacontentservice.util.ApiValidationUtil;
 import lombok.RequiredArgsConstructor;
@@ -35,17 +36,20 @@ public class CommentRestController {
 
     private final CommentService commentService;
 
+    private final PostService postService;
+
     @Operation(summary = "Создание нового комментария")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Новый комментарий успешно создан")
+            @ApiResponse(responseCode = "200", description = "Новый комментарий успешно создан"),
+            @ApiResponse(responseCode = "400", description = "Пост для комментария не найден")
     })
     @PostMapping("/{postId}/comments")
     public Response<Comment> addComment(@RequestBody @Valid CommentPersistRequestDto dto,
                                  @PathVariable @Positive Long postId,
                                  @RequestParam @Positive Long userId) {
+        ApiValidationUtil.requireTrue(postService.existsById(postId), String.format("Пост с postId %d нет в базе данных", postId));
         return Response.ok(commentService.addComment(CommentMapper.toEntity(dto), postId, userId));
     }
-
 
     @Operation(summary = "Эндпоинт для обновление существующего комментария")
     @ApiResponses(value = {
@@ -59,9 +63,8 @@ public class CommentRestController {
                                     @RequestParam @Positive Long userId) {
         Optional<Comment> comment = commentService.findByUserIdAndPostIdAndId(userId, postId, commentId);
         ApiValidationUtil.requireTrue(comment.isPresent(), String.format("Comment by id %d not found", commentId));
-        return Response.ok(commentService.updateComment(CommentMapper.toEntity(comment.get(), dto), postId, userId));
+        return Response.ok(commentService.updateComment(CommentMapper.toEntity(comment.get(), dto)));
     }
-
 
     @Operation(summary = "Удаление комментария")
     @ApiResponses(value = {

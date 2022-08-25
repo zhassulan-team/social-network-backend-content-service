@@ -11,4 +11,6 @@ public interface PostService {
     void deleteById(Long postId);
 
     boolean existsByIdAndUserId(Long postId, Long userId);
+
+    boolean existsById(Long postId);
 }

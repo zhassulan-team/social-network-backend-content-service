@@ -2,7 +2,9 @@ package kata.academy.eurekacontentservice.service.impl;
 
 import kata.academy.eurekacontentservice.model.entity.Comment;
 
+import kata.academy.eurekacontentservice.model.entity.Post;
 import kata.academy.eurekacontentservice.repository.CommentRepository;
+import kata.academy.eurekacontentservice.repository.PostRepository;
 import kata.academy.eurekacontentservice.service.entity.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(Comment comment, Long postId, Long userId) {
+    public Comment updateComment(Comment comment) {
         comment.setText(comment.getText());
         return commentRepository.save(comment);
     }
@@ -36,12 +38,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Comment comment) {
         commentRepository.delete(comment);
-    }
-
-    @Override
-    @Transactional (readOnly = true)
-    public Optional<Comment> findByUserIdAndPostId(Long userId, Long postId) {
-        return commentRepository.findByUserIdAndPostId(userId, postId);
     }
 
     @Override

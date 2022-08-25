@@ -8,11 +8,9 @@ public interface CommentService {
 
     Comment addComment(Comment comment, Long postId, Long userId);
 
-    Comment updateComment(Comment comment, Long postId, Long userId);
+    Comment updateComment(Comment comment);
 
     void deleteComment(Comment comment);
-
-    Optional<Comment> findByUserIdAndPostId(Long userId, Long postId);
 
     Optional<Comment> findByUserIdAndPostIdAndId(Long userId, Long postId, Long commentId);
 }
