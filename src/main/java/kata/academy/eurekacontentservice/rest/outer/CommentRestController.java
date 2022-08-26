@@ -10,7 +10,7 @@ import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentPersistRequestDto;
 import kata.academy.eurekacontentservice.model.dto.CommentUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
-import kata.academy.eurekacontentservice.service.PostService;
+import kata.academy.eurekacontentservice.service.entity.PostService;
 import kata.academy.eurekacontentservice.service.entity.CommentService;
 import kata.academy.eurekacontentservice.util.ApiValidationUtil;
 import lombok.RequiredArgsConstructor;

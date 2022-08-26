@@ -2,7 +2,7 @@ package kata.academy.eurekacontentservice.service.impl;
 
 import kata.academy.eurekacontentservice.model.entity.Post;
 import kata.academy.eurekacontentservice.repository.PostRepository;
-import kata.academy.eurekacontentservice.service.PostService;
+import kata.academy.eurekacontentservice.service.entity.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -8,7 +8,7 @@ import kata.academy.eurekacontentservice.model.converter.PostMapper;
 import kata.academy.eurekacontentservice.model.dto.PostPersistRequestDto;
 import kata.academy.eurekacontentservice.model.dto.PostUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Post;
-import kata.academy.eurekacontentservice.service.PostService;
+import kata.academy.eurekacontentservice.service.entity.PostService;
 import kata.academy.eurekacontentservice.util.ApiValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
