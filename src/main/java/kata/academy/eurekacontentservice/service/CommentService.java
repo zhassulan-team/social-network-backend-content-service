@@ -15,4 +15,6 @@ public interface CommentService {
     Optional<Comment> findByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);
 
     boolean existsByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);
+
+    boolean existsById(Long commentId);
 }
