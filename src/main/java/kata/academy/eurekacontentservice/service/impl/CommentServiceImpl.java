@@ -42,4 +42,10 @@ public class CommentServiceImpl implements CommentService {
     public boolean existsByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId) {
         return commentRepository.existsByIdAndPostIdAndUserId(commentId, postId, userId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existsById(Long commentId) {
+        return commentRepository.existsById(commentId);
+    }
 }

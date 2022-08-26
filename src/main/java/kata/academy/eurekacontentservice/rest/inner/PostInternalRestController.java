@@ -1,7 +1,6 @@
 package kata.academy.eurekacontentservice.rest.inner;
 
-
-import kata.academy.eurekacontentservice.service.entity.PostService;
+import kata.academy.eurekacontentservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +23,4 @@ public class PostInternalRestController {
     public ResponseEntity<Boolean> existsByPostId(@PathVariable @Positive Long postId) {
         return ResponseEntity.ok(postService.existsById(postId));
     }
-
-
 }

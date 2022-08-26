@@ -1,4 +1,4 @@
-package kata.academy.eurekacontentservice.service.entity;
+package kata.academy.eurekacontentservice.service;
 
 import kata.academy.eurekacontentservice.model.entity.Post;
 
