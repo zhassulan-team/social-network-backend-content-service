@@ -30,16 +30,13 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @NotNull
     @Column(nullable = false)
     private Long userId;
 
-
     @NotBlank
     @Column(nullable = false)
     private String text;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -50,7 +47,7 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return id.equals(comment.id) && userId.equals(comment.userId) && text.equals(comment.text) && post.equals(comment.post);
+        return Objects.equals(id, comment.id) && Objects.equals(userId, comment.userId) && Objects.equals(text, comment.text) && Objects.equals(post, comment.post);
     }
 
     @Override
