@@ -1,48 +1,45 @@
 package kata.academy.eurekacontentservice.service.impl;
 
 import kata.academy.eurekacontentservice.model.entity.Comment;
-
-import kata.academy.eurekacontentservice.model.entity.Post;
 import kata.academy.eurekacontentservice.repository.CommentRepository;
-import kata.academy.eurekacontentservice.repository.PostRepository;
-import kata.academy.eurekacontentservice.service.entity.CommentService;
+import kata.academy.eurekacontentservice.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
+@Service
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-    private final PostRepository postRepository;
-
     @Override
-    public Comment addComment(Comment comment, Long postId, Long userId) {
-        Post post = postRepository.findPostById(postId);
-        comment.setPost(post);
-        comment.setUserId(userId);
+    public Comment addComment(Comment comment) {
         return commentRepository.save(comment);
     }
 
     @Override
     public Comment updateComment(Comment comment) {
-        comment.setText(comment.getText());
         return commentRepository.save(comment);
     }
 
     @Override
-    public void deleteComment(Comment comment) {
-        commentRepository.delete(comment);
+    public void deleteById(Long commentId) {
+        commentRepository.deleteById(commentId);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    @Transactional (readOnly = true)
-    public Optional<Comment> findByUserIdAndPostIdAndId(Long userId, Long postId, Long commentId) {
-        return commentRepository.findByUserIdAndPostIdAndId(userId, postId, commentId);
+    public Optional<Comment> findByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId) {
+        return commentRepository.findByIdAndPostIdAndUserId(commentId, postId, userId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existsByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId) {
+        return commentRepository.existsByIdAndPostIdAndUserId(commentId, postId, userId);
     }
 }

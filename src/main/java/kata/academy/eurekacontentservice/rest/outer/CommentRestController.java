@@ -1,7 +1,6 @@
 package kata.academy.eurekacontentservice.rest.outer;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,8 +9,9 @@ import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentPersistRequestDto;
 import kata.academy.eurekacontentservice.model.dto.CommentUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
-import kata.academy.eurekacontentservice.service.entity.PostService;
-import kata.academy.eurekacontentservice.service.entity.CommentService;
+import kata.academy.eurekacontentservice.model.entity.Post;
+import kata.academy.eurekacontentservice.service.CommentService;
+import kata.academy.eurekacontentservice.service.PostService;
 import kata.academy.eurekacontentservice.util.ApiValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,14 +29,13 @@ import javax.validation.constraints.Positive;
 import java.util.Optional;
 
 @Tag(name = "CommentRestController", description = "CRUD операции над комментариями")
-@Validated
 @RequiredArgsConstructor
+@Validated
 @RestController
 @RequestMapping("/api/v1/posts")
 public class CommentRestController {
 
     private final CommentService commentService;
-
     private final PostService postService;
 
     @Operation(summary = "Создание нового комментария")
@@ -45,10 +45,14 @@ public class CommentRestController {
     })
     @PostMapping("/{postId}/comments")
     public Response<Comment> addComment(@RequestBody @Valid CommentPersistRequestDto dto,
-                                 @PathVariable @Positive Long postId,
-                                 @RequestParam @Positive Long userId) {
-        ApiValidationUtil.requireTrue(postService.existsById(postId), String.format("Пост с postId %d нет в базе данных", postId));
-        return Response.ok(commentService.addComment(CommentMapper.toEntity(dto), postId, userId));
+                                        @PathVariable @Positive Long postId,
+                                        @RequestParam @Positive Long userId) {
+        Optional<Post> optionalPost = postService.findById(postId);
+        ApiValidationUtil.requireTrue(optionalPost.isPresent(), String.format("Пост с postId %d нет в базе данных", postId));
+        Comment comment = CommentMapper.toEntity(dto);
+        comment.setPost(optionalPost.get());
+        comment.setUserId(userId);
+        return Response.ok(commentService.addComment(comment));
     }
 
     @Operation(summary = "Эндпоинт для обновление существующего комментария")
@@ -58,12 +62,12 @@ public class CommentRestController {
     })
     @PutMapping("/{postId}/comments/{commentId}")
     public Response<Comment> updateComment(@RequestBody @Valid CommentUpdateRequestDto dto,
-                                    @PathVariable @Positive Long postId,
-                                    @PathVariable @Positive Long commentId,
-                                    @RequestParam @Positive Long userId) {
-        Optional<Comment> comment = commentService.findByUserIdAndPostIdAndId(userId, postId, commentId);
-        ApiValidationUtil.requireTrue(comment.isPresent(), String.format("Comment by id %d not found", commentId));
-        return Response.ok(commentService.updateComment(CommentMapper.toEntity(comment.get(), dto)));
+                                           @PathVariable @Positive Long postId,
+                                           @PathVariable @Positive Long commentId,
+                                           @RequestParam @Positive Long userId) {
+        Optional<Comment> commentOptional = commentService.findByIdAndPostIdAndUserId(userId, postId, commentId);
+        ApiValidationUtil.requireTrue(commentOptional.isPresent(), String.format("Комментарий с commentId %d, postId %d и userId %d нет в базе данных", commentId, postId, userId));
+        return Response.ok(commentService.updateComment(CommentMapper.toEntity(dto, commentOptional.get())));
     }
 
     @Operation(summary = "Удаление комментария")
@@ -73,11 +77,10 @@ public class CommentRestController {
     })
     @DeleteMapping("/{postId}/comments/{commentId}")
     public Response<Void> deleteComment(@PathVariable @Positive Long postId,
-                                 @PathVariable @Positive Long commentId,
-                                 @RequestParam @Positive Long userId) {
-        Optional<Comment> comment = commentService.findByUserIdAndPostIdAndId(userId, postId, commentId);
-        ApiValidationUtil.requireTrue(comment.isPresent(), String.format("Comment by id %d not found", commentId));
-        commentService.deleteComment(comment.get());
+                                        @PathVariable @Positive Long commentId,
+                                        @RequestParam @Positive Long userId) {
+        ApiValidationUtil.requireTrue(commentService.existsByIdAndPostIdAndUserId(commentId, postId, userId), String.format("Комментарий с commentId %d, postId %d и userId %d нет в базе данных", commentId, postId, userId));
+        commentService.deleteById(commentId);
         return Response.ok();
     }
 }

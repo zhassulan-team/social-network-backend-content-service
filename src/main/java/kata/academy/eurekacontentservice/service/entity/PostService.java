@@ -2,6 +2,8 @@ package kata.academy.eurekacontentservice.service.entity;
 
 import kata.academy.eurekacontentservice.model.entity.Post;
 
+import java.util.Optional;
+
 public interface PostService {
 
     Post addPost(Post post);
@@ -13,4 +15,6 @@ public interface PostService {
     boolean existsByIdAndUserId(Long postId, Long userId);
 
     boolean existsById(Long postId);
+
+    Optional<Post> findById(Long postId);
 }
