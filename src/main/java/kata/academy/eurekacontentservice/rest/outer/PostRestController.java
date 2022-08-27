@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kata.academy.eurekacontentservice.api.Response;
+import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
 import kata.academy.eurekacontentservice.model.converter.PostMapper;
 import kata.academy.eurekacontentservice.model.dto.PostPersistRequestDto;
 import kata.academy.eurekacontentservice.model.dto.PostUpdateRequestDto;
@@ -31,6 +32,7 @@ import javax.validation.constraints.Positive;
 public class PostRestController {
 
     private final PostService postService;
+    private final LikeServiceFeignClient likeServiceFeignClient;
 
     @Operation(summary = "Создание нового поста")
     @ApiResponses(value = {
@@ -64,6 +66,7 @@ public class PostRestController {
     public Response<Void> deletePost(@PathVariable @Positive Long postId,
                                      @RequestParam @Positive Long userId) {
         ApiValidationUtil.requireTrue(postService.existsByIdAndUserId(postId, userId), String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId));
+        likeServiceFeignClient.deleteAllLikes(postId);
         postService.deleteById(postId);
         return Response.ok();
     }
