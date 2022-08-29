@@ -66,8 +66,8 @@ public class PostRestController {
     public Response<Void> deletePost(@PathVariable @Positive Long postId,
                                      @RequestParam @Positive Long userId) {
         ApiValidationUtil.requireTrue(postService.existsByIdAndUserId(postId, userId), String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId));
-        likeServiceFeignClient.deleteAllLikes(postId);
         postService.deleteById(postId);
+        likeServiceFeignClient.deleteByPostId(postId);
         return Response.ok();
     }
 }
