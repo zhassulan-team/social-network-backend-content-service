@@ -5,6 +5,8 @@ import kata.academy.eurekacontentservice.repository.CommentRepository;
 import kata.academy.eurekacontentservice.repository.PostRepository;
 import kata.academy.eurekacontentservice.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,4 +55,17 @@ public class PostServiceImpl implements PostService {
     public Optional<Post> findById(Long postId) {
         return postRepository.findById(postId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Post> findAll(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Post> findAllByUserId(Long userId, Pageable pageable) {
+        return postRepository.findAllByUserId(userId, pageable);
+    }
+
 }
