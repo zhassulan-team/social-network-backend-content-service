@@ -8,6 +8,7 @@ import kata.academy.eurekacontentservice.api.Response;
 import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
 import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentPersistRequestDto;
+import kata.academy.eurekacontentservice.model.dto.CommentResponseDto;
 import kata.academy.eurekacontentservice.model.dto.CommentUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
 import kata.academy.eurekacontentservice.model.entity.Post;
@@ -46,15 +47,15 @@ public class CommentRestController {
             @ApiResponse(responseCode = "400", description = "Пост для комментария не найден")
     })
     @PostMapping("/{postId}/comments")
-    public Response<Comment> addComment(@RequestBody @Valid CommentPersistRequestDto dto,
-                                        @PathVariable @Positive Long postId,
-                                        @RequestParam @Positive Long userId) {
+    public Response<CommentResponseDto> addComment(@RequestBody @Valid CommentPersistRequestDto dto,
+                                                   @PathVariable @Positive Long postId,
+                                                   @RequestParam @Positive Long userId) {
         Optional<Post> optionalPost = postService.findById(postId);
         ApiValidationUtil.requireTrue(optionalPost.isPresent(), String.format("Пост с postId %d нет в базе данных", postId));
         Comment comment = CommentMapper.toEntity(dto);
         comment.setPost(optionalPost.get());
         comment.setUserId(userId);
-        return Response.ok(commentService.addComment(comment));
+        return Response.ok(CommentMapper.toDto(commentService.addComment(comment)));
     }
 
     @Operation(summary = "Эндпоинт для обновление существующего комментария")
@@ -63,13 +64,13 @@ public class CommentRestController {
             @ApiResponse(responseCode = "400", description = "Комментарий не найден")
     })
     @PutMapping("/{postId}/comments/{commentId}")
-    public Response<Comment> updateComment(@RequestBody @Valid CommentUpdateRequestDto dto,
+    public Response<CommentResponseDto> updateComment(@RequestBody @Valid CommentUpdateRequestDto dto,
                                            @PathVariable @Positive Long postId,
                                            @PathVariable @Positive Long commentId,
                                            @RequestParam @Positive Long userId) {
         Optional<Comment> commentOptional = commentService.findByIdAndPostIdAndUserId(userId, postId, commentId);
         ApiValidationUtil.requireTrue(commentOptional.isPresent(), String.format("Комментарий с commentId %d, postId %d и userId %d нет в базе данных", commentId, postId, userId));
-        return Response.ok(commentService.updateComment(CommentMapper.toEntity(dto, commentOptional.get())));
+        return Response.ok(CommentMapper.toDto(commentService.updateComment(CommentMapper.toEntity(dto, commentOptional.get()))));
     }
 
     @Operation(summary = "Удаление комментария")
