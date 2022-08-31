@@ -9,11 +9,6 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query("""
-            SELECT c
-            FROM Comment c JOIN FETCH c.post
-            WHERE c.id = :commentId AND c.post.id = :postId AND c.userId = :userId
-                                """)
     Optional<Comment> findByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);
 
     boolean existsByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);

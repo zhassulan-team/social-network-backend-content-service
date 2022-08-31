@@ -22,9 +22,11 @@ public final class CommentMapper {
     }
 
     public static CommentResponseDto toDto(Comment comment) {
-        CommentResponseDto dto = new CommentResponseDto(
-                comment.getId(), comment.getUserId(), comment.getText(), comment.getPost().getId()
+        return new CommentResponseDto(
+                comment.getId(),
+                comment.getUserId(),
+                comment.getText(),
+                comment.getPost().getId()
         );
-        return dto;
     }
 }
