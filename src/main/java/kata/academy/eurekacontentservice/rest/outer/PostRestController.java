@@ -79,25 +79,26 @@ public class PostRestController {
     @GetMapping
     Response<Page<Post>> getPostPage(@RequestBody(required = false) List<String> tags,
                                      Pageable pageable) {
-        //Возвращает все посты из базы с пагинацией, если tags передан,
-        // то возвращать если хотя бы один тег соответствует посту
-        return null;
+        if(tags.isEmpty() || tags == null) {
+            return Response.ok(postService.findAll(pageable));
+        }
+        else return Response.ok(postService.findAll(tags, pageable));
     }
 
     @GetMapping("/owner")
     Response<Page<Post>> getPostPageByOwner(@RequestBody(required = false) List<String> tags,
                                             @RequestParam @Positive Long userId,
                                             Pageable pageable) {
-        //Возвращает все посты текущего юзера из базы с пагинацией, если tags передан,
-        // то возвращать если хотя бы один тег соответствует посту
-        return null;
+        if(tags.isEmpty() || tags == null) {
+            return Response.ok(postService.findAllByUserId(userId, pageable));
+        }
+        else return Response.ok(postService.findAllByUserId(tags, userId, pageable));
     }
 
     @GetMapping("/top")
     Response<Page<Post>> getPostPageByTop(@RequestParam(defaultValue = "100") @Positive Integer count,
                                           Pageable pageable) {
-        ResponseEntity<List> posts = likeServiceFeignClient.getPostsByTopLikes();
-        //Возвращает посты с самым большим количеством лайков из базы с пагинацией
-        return null;
+        List<Long> postIds = likeServiceFeignClient.getPostsByTopLikes(count).getBody();
+        return Response.ok(postService.findAllByPostId(postIds, pageable));
     }
 }

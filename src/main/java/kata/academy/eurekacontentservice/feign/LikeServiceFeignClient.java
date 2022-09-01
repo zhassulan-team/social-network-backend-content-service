@@ -16,6 +16,6 @@ public interface LikeServiceFeignClient {
     @DeleteMapping("/api/internal/v1/posts/{postId}/post-likes")
     ResponseEntity<Void> deleteByPostId(@PathVariable @Positive Long postId);
 
-    @GetMapping("/api/internal/v1/posts/")
-    ResponseEntity<List> getPostsByTopLikes();
+    @GetMapping("/api/internal/v1/posts//top-post-likes")
+    ResponseEntity<List<Long>> getPostsByTopLikes(Integer count);
 }

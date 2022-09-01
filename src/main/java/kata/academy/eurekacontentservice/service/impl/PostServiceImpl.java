@@ -67,8 +67,24 @@ public class PostServiceImpl implements PostService {
 
     @Transactional(readOnly = true)
     @Override
+    public Page<Post> findAll(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Post> findAllByUserId(List<String> tags, Long userId, Pageable pageable) {
+        return postRepository.findAllByUserId(tags, userId, pageable);
+    }
+
+    @Override
     public Page<Post> findAllByUserId(Long userId, Pageable pageable) {
         return postRepository.findAllByUserId(userId, pageable);
+    }
+
+    @Override
+    public Page<Post> findAllByPostId(List<Long> ids, Pageable pageable) {
+        return postRepository.findAllByPostId(ids, pageable);
     }
 
 }
