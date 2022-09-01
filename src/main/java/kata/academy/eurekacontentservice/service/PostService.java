@@ -4,6 +4,7 @@ import kata.academy.eurekacontentservice.model.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostService {
@@ -20,7 +21,7 @@ public interface PostService {
 
     Optional<Post> findById(Long postId);
 
-    Page<Post> findAll(Pageable pageable);
+    Page<Post> findAll(List<String> tags, Pageable pageable);
 
     Page<Post> findAllByUserId(Long userId, Pageable pageable);
 }

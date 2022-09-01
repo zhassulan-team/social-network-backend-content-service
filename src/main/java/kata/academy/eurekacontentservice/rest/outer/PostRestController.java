@@ -14,6 +14,7 @@ import kata.academy.eurekacontentservice.util.ApiValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,6 +96,7 @@ public class PostRestController {
     @GetMapping("/top")
     Response<Page<Post>> getPostPageByTop(@RequestParam(defaultValue = "100") @Positive Integer count,
                                           Pageable pageable) {
+        ResponseEntity<List> posts = likeServiceFeignClient.getPostsByTopLikes();
         //Возвращает посты с самым большим количеством лайков из базы с пагинацией
         return null;
     }
