@@ -1,5 +1,6 @@
 package kata.academy.eurekacontentservice.service.impl;
 
+import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
 import kata.academy.eurekacontentservice.model.entity.Post;
 import kata.academy.eurekacontentservice.repository.CommentRepository;
 import kata.academy.eurekacontentservice.repository.PostRepository;
@@ -18,6 +19,8 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final LikeServiceFeignClient likeServiceFeignClient;
+
 
     @Override
     public Post addPost(Post post) {
@@ -34,6 +37,8 @@ public class PostServiceImpl implements PostService {
         List<Long> commentIds = commentRepository.findAllIdsByPostId(postId);
         commentRepository.deleteAllByIdInBatch(commentIds);
         postRepository.deleteById(postId);
+        likeServiceFeignClient.deleteByPostId(postId);
+        likeServiceFeignClient.deleteByCommentIds(commentIds);
     }
 
     @Transactional(readOnly = true)

@@ -24,4 +24,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             WHERE c.post.id = :postId
                                 """)
     List<Long> findAllIdsByPostId(Long postId);
+
 }
