@@ -1,14 +1,14 @@
 package kata.academy.eurekacontentservice.service.impl;
 
+import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
 import kata.academy.eurekacontentservice.model.entity.Post;
-import kata.academy.eurekacontentservice.repository.CommentRepository;
 import kata.academy.eurekacontentservice.repository.PostRepository;
+import kata.academy.eurekacontentservice.service.CommentService;
 import kata.academy.eurekacontentservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -17,7 +17,8 @@ import java.util.Optional;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
+    private final CommentService commentService;
+    private final LikeServiceFeignClient likeServiceFeignClient;
 
     @Override
     public Post addPost(Post post) {
@@ -31,9 +32,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteById(Long postId) {
-        List<Long> commentIds = commentRepository.findAllIdsByPostId(postId);
-        commentRepository.deleteAllByIdInBatch(commentIds);
+        commentService.deleteAllByPostId(postId);
         postRepository.deleteById(postId);
+        likeServiceFeignClient.deleteByPostId(postId);
     }
 
     @Transactional(readOnly = true)
