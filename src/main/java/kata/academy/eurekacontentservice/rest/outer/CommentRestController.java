@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kata.academy.eurekacontentservice.api.Response;
-import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
 import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentPersistRequestDto;
 import kata.academy.eurekacontentservice.model.dto.CommentResponseDto;
@@ -39,7 +38,6 @@ public class CommentRestController {
 
     private final CommentService commentService;
     private final PostService postService;
-    private final LikeServiceFeignClient likeServiceFeignClient;
 
     @Operation(summary = "Создание нового комментария")
     @ApiResponses(value = {
@@ -65,9 +63,9 @@ public class CommentRestController {
     })
     @PutMapping("/{postId}/comments/{commentId}")
     public Response<CommentResponseDto> updateComment(@RequestBody @Valid CommentUpdateRequestDto dto,
-                                           @PathVariable @Positive Long postId,
-                                           @PathVariable @Positive Long commentId,
-                                           @RequestParam @Positive Long userId) {
+                                                      @PathVariable @Positive Long postId,
+                                                      @PathVariable @Positive Long commentId,
+                                                      @RequestParam @Positive Long userId) {
         Optional<Comment> commentOptional = commentService.findByIdAndPostIdAndUserId(userId, postId, commentId);
         ApiValidationUtil.requireTrue(commentOptional.isPresent(), String.format("Комментарий с commentId %d, postId %d и userId %d нет в базе данных", commentId, postId, userId));
         return Response.ok(CommentMapper.toDto(commentService.updateComment(CommentMapper.toEntity(dto, commentOptional.get()))));
@@ -84,7 +82,6 @@ public class CommentRestController {
                                         @RequestParam @Positive Long userId) {
         ApiValidationUtil.requireTrue(commentService.existsByIdAndPostIdAndUserId(commentId, postId, userId), String.format("Комментарий с commentId %d, postId %d и userId %d нет в базе данных", commentId, postId, userId));
         commentService.deleteById(commentId);
-        likeServiceFeignClient.deleteByCommentId(commentId);
         return Response.ok();
     }
 }
