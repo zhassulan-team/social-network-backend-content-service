@@ -1,8 +1,5 @@
 package kata.academy.eurekacontentservice.rest.outer;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kata.academy.eurekacontentservice.api.Response;
 import kata.academy.eurekacontentservice.model.converter.PostMapper;
 import kata.academy.eurekacontentservice.model.dto.PostPersistRequestDto;
@@ -32,10 +29,6 @@ public class PostRestController {
 
     private final PostService postService;
 
-    @Operation(summary = "Создание нового поста")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Новый пост успешно создан")
-    })
     @PostMapping
     public Response<Post> addPost(@RequestBody @Valid PostPersistRequestDto dto,
                                   @RequestParam @Positive Long userId) {
@@ -44,11 +37,6 @@ public class PostRestController {
         return Response.ok(postService.addPost(post));
     }
 
-    @Operation(summary = "Обновление существующего поста")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Существующий пост успешно обновлен"),
-            @ApiResponse(responseCode = "400", description = "Пост не найден")
-    })
     @PutMapping("/{postId}")
     public Response<Post> updatePost(@RequestBody @Valid PostUpdateRequestDto dto,
                                      @PathVariable @Positive Long postId,

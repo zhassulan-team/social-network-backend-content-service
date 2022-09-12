@@ -1,6 +1,7 @@
 package kata.academy.eurekacontentservice.rest;
 
 import kata.academy.eurekacontentservice.api.Response;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,13 +19,13 @@ import javax.validation.ConstraintViolationException;
 public class AdviceRestController {
 
     @ResponseBody
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public Response<Void> onGlobalException(Exception exception) {
         return Response.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage());
     }
 
     @ResponseBody
-    @ExceptionHandler
+    @ExceptionHandler(PropertyReferenceException.class)
     public Response<Void> onPropertyReferenceException(PropertyReferenceException exception) {
         return Response.error(exception.getMessage());
     }
@@ -51,5 +52,11 @@ public class AdviceRestController {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Response<Void> onHttpMessageNotReadableException() {
         return Response.error("В запросе не указано тело");
+    }
+
+    @ResponseBody
+    @ExceptionHandler(NoFallbackAvailableException.class)
+    public Response<Void> onNoFallbackAvailableException(NoFallbackAvailableException exception) {
+        return Response.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage());
     }
 }

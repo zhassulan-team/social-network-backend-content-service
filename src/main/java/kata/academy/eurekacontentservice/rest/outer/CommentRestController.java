@@ -1,9 +1,5 @@
 package kata.academy.eurekacontentservice.rest.outer;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import kata.academy.eurekacontentservice.api.Response;
 import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentPersistRequestDto;
@@ -29,7 +25,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.Optional;
 
-@Tag(name = "CommentRestController", description = "CRUD операции над комментариями")
 @RequiredArgsConstructor
 @Validated
 @RestController
@@ -39,11 +34,6 @@ public class CommentRestController {
     private final CommentService commentService;
     private final PostService postService;
 
-    @Operation(summary = "Создание нового комментария")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Новый комментарий успешно создан"),
-            @ApiResponse(responseCode = "400", description = "Пост для комментария не найден")
-    })
     @PostMapping("/{postId}/comments")
     public Response<CommentResponseDto> addComment(@RequestBody @Valid CommentPersistRequestDto dto,
                                                    @PathVariable @Positive Long postId,
@@ -56,11 +46,6 @@ public class CommentRestController {
         return Response.ok(CommentMapper.toDto(commentService.addComment(comment)));
     }
 
-    @Operation(summary = "Эндпоинт для обновление существующего комментария")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Комментарий успешно обновлён"),
-            @ApiResponse(responseCode = "400", description = "Комментарий не найден")
-    })
     @PutMapping("/{postId}/comments/{commentId}")
     public Response<CommentResponseDto> updateComment(@RequestBody @Valid CommentUpdateRequestDto dto,
                                                       @PathVariable @Positive Long postId,
@@ -71,11 +56,6 @@ public class CommentRestController {
         return Response.ok(CommentMapper.toDto(commentService.updateComment(CommentMapper.toEntity(dto, commentOptional.get()))));
     }
 
-    @Operation(summary = "Удаление комментария")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Комментарий успешно удален"),
-            @ApiResponse(responseCode = "400", description = "Комментарий не найден")
-    })
     @DeleteMapping("/{postId}/comments/{commentId}")
     public Response<Void> deleteComment(@PathVariable @Positive Long postId,
                                         @PathVariable @Positive Long commentId,
