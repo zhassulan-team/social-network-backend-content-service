@@ -7,15 +7,19 @@ import kata.academy.eurekacontentservice.model.dto.CommentResponseDto;
 import kata.academy.eurekacontentservice.model.dto.CommentUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
 import kata.academy.eurekacontentservice.model.entity.Post;
-import kata.academy.eurekacontentservice.service.CommentResponseDtoService;
 import kata.academy.eurekacontentservice.service.CommentService;
 import kata.academy.eurekacontentservice.service.PostService;
 import kata.academy.eurekacontentservice.util.ApiValidationUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -29,7 +33,6 @@ public class CommentRestController {
 
     private final CommentService commentService;
     private final PostService postService;
-    private final CommentResponseDtoService commentResponseDtoService;
 
     @PostMapping("/{postId}/comments")
     public Response<CommentResponseDto> addComment(@RequestBody @Valid CommentPersistRequestDto dto,
@@ -60,15 +63,5 @@ public class CommentRestController {
         ApiValidationUtil.requireTrue(commentService.existsByIdAndPostIdAndUserId(commentId, postId, userId), String.format("Комментарий с commentId %d, postId %d и userId %d нет в базе данных", commentId, postId, userId));
         commentService.deleteById(commentId);
         return Response.ok();
-    }
-
-    @GetMapping("/{postId}/comments")
-    public Response<Page<CommentResponseDto>> getCommentPage(@PathVariable @Positive Long postId,
-                                                             @RequestParam @Positive Long userId,
-                                                             Pageable pageable) {
-        if (postId != 0) {
-            return Response.ok(commentResponseDtoService.findByIdAndPostIdAndUserId(postId, userId, pageable));
-        }
-        return Response.ok(commentResponseDtoService.findByIdAndUserId(userId, pageable));
     }
 }
