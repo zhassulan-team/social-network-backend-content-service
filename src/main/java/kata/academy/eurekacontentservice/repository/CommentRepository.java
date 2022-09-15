@@ -1,6 +1,9 @@
 package kata.academy.eurekacontentservice.repository;
 
+import kata.academy.eurekacontentservice.model.dto.CommentResponseDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,6 +15,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);
 
     boolean existsByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);
+
+    Page<CommentResponseDto> findByIdAndPostIdAndUserId(Long postId, Long userId, Pageable pageable);
+
+    Page<CommentResponseDto> findByIdAndUserId(Long userId, Pageable pageable);
+
 
     @Query("""
             SELECT c.id
