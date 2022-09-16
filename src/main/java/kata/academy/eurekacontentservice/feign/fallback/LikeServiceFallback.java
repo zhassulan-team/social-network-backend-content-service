@@ -10,16 +10,19 @@ record LikeServiceFallback(Throwable cause) implements LikeServiceFeignClient {
 
     @Override
     public ResponseEntity<Void> deleteByPostId(Long postId) {
-        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s".formatted(cause.getMessage()), cause);
+        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s"
+                .formatted(cause.getMessage()), cause);
     }
 
     @Override
     public ResponseEntity<Void> deleteByCommentId(Long commentId) {
-        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s".formatted(cause.getMessage()), cause);
+        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s"
+                .formatted(cause.getMessage()), cause);
     }
 
     @Override
     public ResponseEntity<Void> deleteAllByCommentIds(List<Long> commentIds) {
-        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s".formatted(cause.getMessage()), cause);
+        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s"
+                .formatted(cause.getMessage()), cause);
     }
 }
