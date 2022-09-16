@@ -15,7 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -29,7 +37,6 @@ public class CommentRestController {
 
     private final CommentService commentService;
     private final PostService postService;
-
     private final CommentResponseDtoService commentResponseDtoService;
 
     @PostMapping("/{postId}/comments")
@@ -67,6 +74,7 @@ public class CommentRestController {
     public Response<Page<CommentResponseDto>> getCommentPage(@PathVariable @Positive Long postId,
                                                              @RequestParam @Positive Long userId,
                                                              Pageable pageable) {
+        ApiValidationUtil.requireTrue(postService.existsById(postId), String.format("Пост с postId %d нет в базе данных", postId));
         return Response.ok(commentResponseDtoService.findAllByPostId(postId, pageable));
     }
 }
