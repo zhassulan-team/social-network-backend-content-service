@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentResponseDtoService {
-    Page<CommentResponseDto> findByIdAndPostIdAndUserId(Long postId, Long userId, Pageable pageable);
+    Page<CommentResponseDto> findAllByPostId(Long postId, Pageable pageable);
 
-    Page<CommentResponseDto> findByIdAndUserId(Long userId, Pageable pageable);
 }

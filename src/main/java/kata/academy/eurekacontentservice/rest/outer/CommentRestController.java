@@ -67,9 +67,6 @@ public class CommentRestController {
     public Response<Page<CommentResponseDto>> getCommentPage(@PathVariable @Positive Long postId,
                                                              @RequestParam @Positive Long userId,
                                                              Pageable pageable) {
-        if (postId != 0) {
-            return Response.ok(commentResponseDtoService.findByIdAndPostIdAndUserId(postId, userId, pageable));
-        }
-        return Response.ok(commentResponseDtoService.findByIdAndUserId(userId, pageable));
+        return Response.ok(commentResponseDtoService.findAllByPostId(postId, pageable));
     }
 }

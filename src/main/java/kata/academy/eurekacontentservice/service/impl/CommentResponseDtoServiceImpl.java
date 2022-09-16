@@ -18,13 +18,7 @@ public class CommentResponseDtoServiceImpl implements CommentResponseDtoService 
 
     @Transactional(readOnly = true)
     @Override
-    public Page<CommentResponseDto> findByIdAndPostIdAndUserId(Long postId, Long userId, Pageable pageable) {
-        return commentRepository.findByIdAndPostIdAndUserId(postId, userId, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Page<CommentResponseDto> findByIdAndUserId(Long userId, Pageable pageable) {
-        return commentRepository.findByIdAndUserId(userId, pageable);
+    public Page<CommentResponseDto> findAllByPostId(Long postId, Pageable pageable) {
+        return commentRepository.findAllByPostId(postId, pageable);
     }
 }
