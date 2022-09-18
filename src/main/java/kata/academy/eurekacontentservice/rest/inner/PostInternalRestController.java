@@ -23,4 +23,5 @@ public class PostInternalRestController {
     public ResponseEntity<Boolean> existsByPostId(@PathVariable @Positive Long postId) {
         return ResponseEntity.ok(postService.existsById(postId));
     }
+
 }
