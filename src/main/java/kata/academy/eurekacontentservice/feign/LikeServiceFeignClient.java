@@ -3,6 +3,7 @@ package kata.academy.eurekacontentservice.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -11,6 +12,9 @@ import java.util.List;
 
 @FeignClient("eureka-like-service")
 public interface LikeServiceFeignClient {
+
+    @GetMapping("/api/internal/v1/posts/post-likes")
+    ResponseEntity<List<Long>> getPostsByLikesAmount(@RequestBody @Positive Integer count);
 
     @DeleteMapping("/api/internal/v1/posts/{postId}/post-likes")
     ResponseEntity<Void> deleteByPostId(@PathVariable @Positive Long postId);
