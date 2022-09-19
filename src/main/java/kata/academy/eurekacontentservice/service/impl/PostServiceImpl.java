@@ -7,12 +7,17 @@ import kata.academy.eurekacontentservice.service.CommentService;
 import kata.academy.eurekacontentservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Transactional
@@ -30,17 +35,18 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<Post> getAllPostsByUserId(List<String> tags, Long userId, Pageable pageable) {
         Page<Post> postsWithTags = pickPostIfTagExists(tags, pageable);
-        List<Long> postsWithTagsByUserId = new ArrayList<>();
+        List<Long> idsByTags = new ArrayList<>();
         Page<Post> posts = null;
-        for (Post post : postsWithTags){
-            if (Objects.equals(post.getUserId(), userId)){
-                postsWithTagsByUserId.add(post.getId());
-            }
-            for (Long postId : postsWithTagsByUserId){
-                posts = postRepository.findAllByUserId(postId, pageable);
+        for (Post post : postsWithTags) {
+            if (Objects.equals(post.getUserId(), userId)) {
+                idsByTags.add(post.getId());
             }
         }
-        return (postsWithTagsByUserId.size() == 0) ? null : posts;
+        List<Post> listToReturn = new ArrayList<>();
+        for (Long postId : idsByTags) {
+            listToReturn.add(postRepository.findById(postId).get());
+        }
+        return listToPage(pageable, listToReturn);
     }
 
     private Page<Post> pickPostIfTagExists(List<String> tags, Pageable pageable) {
@@ -54,14 +60,23 @@ public class PostServiceImpl implements PostService {
                     }
                 }
             }
-            List<Long> listIds = new ArrayList<>(postsWithTags);
             List<Post> postList = new ArrayList<>();
-            for(Long postId : listIds){
+            for (Long postId : postsWithTags) {
                 postList.add(postRepository.findById(postId).get());
             }
-            return (Page<Post>) postList;
+
+            return listToPage(pageable, postList);
         }
         return postRepository.findAll(pageable);
+    }
+
+    private static Page<Post> listToPage(Pageable pageable, List<Post> entities) {
+        int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
+        int upperBound = Math.min(lowerBound + pageable.getPageSize() - 1, entities.size());
+
+        List<Post> subList = entities.subList(lowerBound, upperBound);
+
+        return new PageImpl<Post>(subList, pageable, subList.size());
     }
 
     @Override
@@ -71,7 +86,7 @@ public class PostServiceImpl implements PostService {
         for (Long postId : postIds) {
             posts.add(postRepository.findById(postId).get());
         }
-        return (Page<Post>) posts;
+        return listToPage(pageable, posts);
     }
 
     @Override
