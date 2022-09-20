@@ -61,11 +61,11 @@ public class Post {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return Objects.equals(id, post.id) && Objects.equals(userId, post.userId) && Objects.equals(title, post.title) && Objects.equals(text, post.text) && Objects.equals(createDate, post.createDate) && Objects.equals(tags, post.tags);
+        return Objects.equals(id, post.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, title, text, createDate, tags);
+        return Objects.hash(id);
     }
 }

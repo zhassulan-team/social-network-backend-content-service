@@ -26,6 +26,5 @@ public final class PostMapper {
         post.setTags(dto.tags());
         post.setCreateDate(LocalDateTime.now());
         return post;
-
     }
 }
