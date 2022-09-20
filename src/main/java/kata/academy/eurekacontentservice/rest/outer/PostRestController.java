@@ -32,6 +32,7 @@ public class PostRestController {
     @PostMapping
     public Response<Post> addPost(@RequestBody @Valid PostPersistRequestDto dto,
                                   @RequestParam @Positive Long userId) {
+        System.out.println(dto.toString());
         Post post = PostMapper.toEntity(dto);
         post.setUserId(userId);
         return Response.ok(postService.addPost(post));
