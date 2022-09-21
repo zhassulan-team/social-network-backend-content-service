@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Validated
@@ -60,17 +60,17 @@ public class PostRestController {
     public Response<Post> updatePost(@RequestBody @Valid PostUpdateRequestDto dto,
                                      @PathVariable @Positive Long postId,
                                      @RequestParam @Positive Long userId) {
-        ApiValidationUtil.requireTrue(postService.existsByIdAndUserId(postId, userId), String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId));
-        Post post = PostMapper.toEntity(dto);
-        post.setId(postId);
-        post.setUserId(userId);
-        return Response.ok(postService.updatePost(post));
+        Optional<Post> optionalPost = postService.findByIdAndUserId(postId, userId);
+        ApiValidationUtil.requireTrue(optionalPost.isPresent(),
+                String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId));
+        return Response.ok(postService.updatePost(PostMapper.toEntity(dto, optionalPost.get())));
     }
 
     @DeleteMapping("/{postId}")
     public Response<Void> deletePost(@PathVariable @Positive Long postId,
                                      @RequestParam @Positive Long userId) {
-        ApiValidationUtil.requireTrue(postService.existsByIdAndUserId(postId, userId), String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId));
+        ApiValidationUtil.requireTrue(postService.existsByIdAndUserId(postId, userId),
+                String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId));
         postService.deleteById(postId);
         return Response.ok();
     }

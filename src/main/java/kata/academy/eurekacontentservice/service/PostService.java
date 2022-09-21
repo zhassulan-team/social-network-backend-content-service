@@ -24,4 +24,6 @@ public interface PostService {
     boolean existsById(Long postId);
 
     Optional<Post> findById(Long postId);
+
+    Optional<Post> findByIdAndUserId(Long postId, Long userId);
 }
