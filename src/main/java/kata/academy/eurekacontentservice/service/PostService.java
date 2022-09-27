@@ -11,10 +11,6 @@ import java.util.Optional;
 
 public interface PostService {
 
-    Page<Post> getAllPosts(List<String> tags, Pageable pageable);
-    Page<Post> getAllPostsByUserId(List<String> tags, Long userId, Pageable pageable);
-    Page<Post> getPostsByLikesAmount(Integer count, Pageable pageable);
-
     Post addPost(Post post);
 
     Post updatePost(Post post);

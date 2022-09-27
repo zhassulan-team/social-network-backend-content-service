@@ -8,6 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PostRepository extends JpaRepository<Post, Long> {
     boolean existsByIdAndUserId(Long postId, Long userId);
 
-    Page<Post> findAllByUserId(Long userId, Pageable pageable);
-
 }
