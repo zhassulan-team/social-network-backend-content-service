@@ -45,6 +45,8 @@ public class Post {
     @Column(nullable = false)
     private String text;
 
+    private String picUrl;
+
     @NotNull
     @Column(nullable = false)
     private LocalDateTime createDate;
