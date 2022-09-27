@@ -1,17 +1,10 @@
 package kata.academy.eurekacontentservice.service;
 
 import kata.academy.eurekacontentservice.model.entity.Post;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface PostService {
-
-    Page<Post> getAllPosts(List<String> tags, Pageable pageable);
-    Page<Post> getAllPostsByUserId(Long userId, List<String> tags, Pageable pageable);
-    Page<Post> getTopPostsByCount(Integer count, Pageable pageable);
 
     Post addPost(Post post);
 
@@ -25,5 +18,4 @@ public interface PostService {
 
     Optional<Post> findById(Long postId);
 
-    Optional<Post> findByIdAndUserId(Long postId, Long userId);
 }
