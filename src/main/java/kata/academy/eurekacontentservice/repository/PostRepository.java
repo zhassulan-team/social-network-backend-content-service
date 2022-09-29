@@ -9,13 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+
     boolean existsByIdAndUserId(Long postId, Long userId);
 
     Page<Post> findAllDistinctByTagsIn(List<String> tags, Pageable pageable);
 
     Page<Post> findAllDistinctByUserIdAndTagsIn(Long userId, List<String> tags, Pageable pageable);
 
-    Page<Post> findAllByIdIn(List<Long> ids, Pageable pageable);
+    Page<Post> findAllByIdIn(List<Long> postIds, Pageable pageable);
 
     Page<Post> findAllByUserId(Long userId, Pageable pageable);
 

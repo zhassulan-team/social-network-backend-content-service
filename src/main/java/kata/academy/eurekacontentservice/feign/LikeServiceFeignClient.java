@@ -15,7 +15,7 @@ import java.util.List;
 public interface LikeServiceFeignClient {
 
     @GetMapping("/api/internal/v1/posts/post-likes")
-    ResponseEntity<List<Long>> getPostsByLikesAmount(@RequestBody @Positive Integer count);
+    ResponseEntity<List<Long>> getTopPostIdsByCount(@RequestBody @Positive Integer count);
 
     @DeleteMapping("/api/internal/v1/posts/{postId}/post-likes")
     ResponseEntity<Void> deleteByPostId(@PathVariable @Positive Long postId);

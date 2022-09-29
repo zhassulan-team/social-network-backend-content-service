@@ -9,7 +9,7 @@ import java.util.List;
 record LikeServiceFallback(Throwable cause) implements LikeServiceFeignClient {
 
     @Override
-    public ResponseEntity<List<Long>> getPostsByLikesAmount(Integer count) {
+    public ResponseEntity<List<Long>> getTopPostIdsByCount(Integer count) {
         throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
     }

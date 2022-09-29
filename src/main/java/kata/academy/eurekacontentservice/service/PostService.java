@@ -9,9 +9,11 @@ import java.util.Optional;
 
 public interface PostService {
 
-    Page<Post> getAllPosts(List<String> tags, Pageable pageable);
-    Page<Post> getAllPostsByUserId(Long userId, List<String> tags, Pageable pageable);
-    Page<Post> getTopPostsByCount(Integer count, Pageable pageable);
+    Page<Post> findAllByTags(List<String> tags, Pageable pageable);
+
+    Page<Post> findAllByUserIdAndTags(Long userId, List<String> tags, Pageable pageable);
+
+    Page<Post> findAllTopByCount(Integer count, Pageable pageable);
 
     Post addPost(Post post);
 

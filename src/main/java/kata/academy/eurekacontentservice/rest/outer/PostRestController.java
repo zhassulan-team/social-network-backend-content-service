@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -30,22 +31,25 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/posts")
 public class PostRestController {
+
     private final PostService postService;
 
     @GetMapping
-    public Response<Page<Post>> getPostPage(@RequestBody(required = false) List<String> tags, Pageable pageable) {
-        return Response.ok(postService.getAllPosts(tags, pageable));
+    public Response<Page<Post>> getPostPage(@RequestParam(required = false) List<String> tags,
+                                            Pageable pageable) {
+        return Response.ok(postService.findAllByTags(tags, pageable));
     }
 
     @GetMapping("/owner")
-    public Response<Page<Post>> getPostPageByOwner(@RequestBody(required = false) List<String> tags,
+    public Response<Page<Post>> getPostPageByOwner(@RequestParam(required = false) List<String> tags,
                                                    @RequestParam @Positive Long userId, Pageable pageable) {
-        return Response.ok(postService.getAllPostsByUserId(userId, tags, pageable));
+        return Response.ok(postService.findAllByUserIdAndTags(userId, tags, pageable));
     }
 
     @GetMapping("/top")
-    public Response<Page<Post>> getPostPageByTop(@RequestParam(defaultValue = "100") @Positive Integer count, Pageable pageable) {
-        return Response.ok(postService.getTopPostsByCount(count, pageable));
+    public Response<Page<Post>> getPostPageByTop(@RequestParam(defaultValue = "100") @Positive Integer count,
+                                                 Pageable pageable) {
+        return Response.ok(postService.findAllTopByCount(count, pageable));
     }
 
     @PostMapping

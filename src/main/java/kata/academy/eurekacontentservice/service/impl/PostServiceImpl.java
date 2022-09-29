@@ -18,29 +18,33 @@ import java.util.Optional;
 @Transactional
 @Service
 public class PostServiceImpl implements PostService {
+
     private final PostRepository postRepository;
     private final CommentService commentService;
     private final LikeServiceFeignClient likeServiceFeignClient;
 
+    @Transactional(readOnly = true)
     @Override
-    public Page<Post> getAllPosts(List<String> tags, Pageable pageable) {
+    public Page<Post> findAllByTags(List<String> tags, Pageable pageable) {
         if (tags == null || tags.isEmpty()) {
             return postRepository.findAll(pageable);
         }
         return postRepository.findAllDistinctByTagsIn(tags, pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public Page<Post> getAllPostsByUserId(Long userId, List<String> tags, Pageable pageable) {
+    public Page<Post> findAllByUserIdAndTags(Long userId, List<String> tags, Pageable pageable) {
         if (tags == null || tags.isEmpty()) {
             return postRepository.findAllByUserId(userId, pageable);
         }
         return postRepository.findAllDistinctByUserIdAndTagsIn(userId, tags, pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public Page<Post> getTopPostsByCount(Integer count, Pageable pageable) {
-        List<Long> postIds = likeServiceFeignClient.getPostsByLikesAmount(count).getBody();
+    public Page<Post> findAllTopByCount(Integer count, Pageable pageable) {
+        List<Long> postIds = likeServiceFeignClient.getTopPostIdsByCount(count).getBody();
         return postRepository.findAllByIdIn(postIds, pageable);
     }
 
