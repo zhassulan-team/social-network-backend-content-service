@@ -51,8 +51,6 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime createDate;
 
-    private String picUrl;
-
     @ElementCollection
     @CollectionTable(
             name = "posts_tags",
