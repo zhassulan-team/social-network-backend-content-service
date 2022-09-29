@@ -5,6 +5,8 @@ import kata.academy.eurekacontentservice.model.dto.CommentResponseDto;
 import kata.academy.eurekacontentservice.model.dto.CommentUpdateRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
 
+import java.time.LocalDateTime;
+
 public final class CommentMapper {
 
     private CommentMapper() {
@@ -13,6 +15,7 @@ public final class CommentMapper {
     public static Comment toEntity(CommentPersistRequestDto dto) {
         Comment comment = new Comment();
         comment.setText(dto.text());
+        comment.setCreateDate(LocalDateTime.now());
         return comment;
     }
 
@@ -26,7 +29,8 @@ public final class CommentMapper {
                 comment.getId(),
                 comment.getUserId(),
                 comment.getText(),
-                comment.getPost().getId()
+                comment.getPost().getId(),
+                comment.getCreateDate()
         );
     }
 }

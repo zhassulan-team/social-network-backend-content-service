@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -38,6 +39,10 @@ public class Comment {
     @Column(nullable = false)
     private String text;
 
+    @NotNull
+    @Column(nullable = false)
+    private LocalDateTime createDate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
@@ -47,11 +52,11 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id) && Objects.equals(userId, comment.userId) && Objects.equals(text, comment.text) && Objects.equals(post, comment.post);
+        return Objects.equals(id, comment.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, text, post);
+        return Objects.hash(id);
     }
 }

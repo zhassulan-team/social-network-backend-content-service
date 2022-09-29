@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +44,12 @@ public class Post {
     @NotBlank
     @Column(nullable = false)
     private String text;
+    
+    private String picUrl;
+
+    @NotNull
+    @Column(nullable = false)
+    private LocalDateTime createDate;
 
     @ElementCollection
     @CollectionTable(
@@ -56,11 +63,11 @@ public class Post {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return Objects.equals(id, post.id) && Objects.equals(userId, post.userId) && Objects.equals(title, post.title) && Objects.equals(text, post.text) && Objects.equals(tags, post.tags);
+        return Objects.equals(id, post.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, title, text, tags);
+        return Objects.hash(id);
     }
 }
