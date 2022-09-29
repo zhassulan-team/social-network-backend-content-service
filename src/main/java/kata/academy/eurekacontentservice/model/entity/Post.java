@@ -44,6 +44,8 @@ public class Post {
     @NotBlank
     @Column(nullable = false)
     private String text;
+    
+    private String picUrl;
 
     @NotNull
     @Column(nullable = false)

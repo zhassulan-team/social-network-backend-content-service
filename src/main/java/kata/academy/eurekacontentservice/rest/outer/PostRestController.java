@@ -8,8 +8,11 @@ import kata.academy.eurekacontentservice.model.entity.Post;
 import kata.academy.eurekacontentservice.service.PostService;
 import kata.academy.eurekacontentservice.util.ApiValidationUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,6 +33,24 @@ import java.util.Optional;
 public class PostRestController {
 
     private final PostService postService;
+
+    @GetMapping
+    public Response<Page<Post>> getPostPage(@RequestParam(required = false) List<String> tags,
+                                            Pageable pageable) {
+        return Response.ok(postService.findAllByTags(tags, pageable));
+    }
+
+    @GetMapping("/owner")
+    public Response<Page<Post>> getPostPageByOwner(@RequestParam(required = false) List<String> tags,
+                                                   @RequestParam @Positive Long userId, Pageable pageable) {
+        return Response.ok(postService.findAllByUserIdAndTags(userId, tags, pageable));
+    }
+
+    @GetMapping("/top")
+    public Response<Page<Post>> getPostPageByTop(@RequestParam(defaultValue = "100") @Positive Integer count,
+                                                 Pageable pageable) {
+        return Response.ok(postService.findAllTopByCount(count, pageable));
+    }
 
     @PostMapping
     public Response<Post> addPost(@RequestBody @Valid PostPersistRequestDto dto,

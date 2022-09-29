@@ -4,6 +4,7 @@ import kata.academy.eurekacontentservice.feign.fallback.LikeServiceFallbackFacto
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -12,6 +13,9 @@ import java.util.List;
 
 @FeignClient(value = "eureka-like-service", fallbackFactory = LikeServiceFallbackFactory.class)
 public interface LikeServiceFeignClient {
+
+    @GetMapping("/api/internal/v1/posts/post-likes")
+    ResponseEntity<List<Long>> getTopPostIdsByCount(@RequestBody @Positive Integer count);
 
     @DeleteMapping("/api/internal/v1/posts/{postId}/post-likes")
     ResponseEntity<Void> deleteByPostId(@PathVariable @Positive Long postId);

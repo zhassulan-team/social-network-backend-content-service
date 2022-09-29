@@ -9,6 +9,12 @@ import java.util.List;
 record LikeServiceFallback(Throwable cause) implements LikeServiceFeignClient {
 
     @Override
+    public ResponseEntity<List<Long>> getTopPostIdsByCount(Integer count) {
+        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s"
+                .formatted(cause.getMessage()), cause);
+    }
+
+    @Override
     public ResponseEntity<Void> deleteByPostId(Long postId) {
         throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
