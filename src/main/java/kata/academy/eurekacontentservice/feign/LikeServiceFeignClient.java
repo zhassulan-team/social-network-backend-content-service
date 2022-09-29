@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface LikeServiceFeignClient {
 
     @GetMapping("/api/internal/v1/posts/post-likes")
-    ResponseEntity<List<Long>> getTopPostIdsByCount(@RequestBody @Positive Integer count);
+    ResponseEntity<List<Long>> getTopPostIdsByCount(@RequestParam @Positive Integer count);
 
     @DeleteMapping("/api/internal/v1/posts/{postId}/post-likes")
     ResponseEntity<Void> deleteByPostId(@PathVariable @Positive Long postId);
