@@ -19,4 +19,6 @@ public interface PostService {
     Optional<Post> findById(Long postId);
 
     Optional<Post> findByIdAndUserId(Long postId, Long userId);
+
+    long getUserIdByPostId(Long postId);
 }

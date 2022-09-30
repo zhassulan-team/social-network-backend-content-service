@@ -59,4 +59,10 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.deleteAllByIdInBatch(commentIds);
         likeServiceFeignClient.deleteAllByCommentIds(commentIds);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public long getUserIdByCommentId(Long commentId) {
+        return commentRepository.getUserIdById(commentId).orElse(0L);
+    }
 }

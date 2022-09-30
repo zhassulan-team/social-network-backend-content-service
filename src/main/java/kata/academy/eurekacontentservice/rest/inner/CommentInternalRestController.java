@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.constraints.Positive;
 
@@ -23,5 +23,11 @@ public class CommentInternalRestController {
     @GetMapping("/{commentId}/exists")
     public ResponseEntity<Boolean> existsByCommentId(@PathVariable @Positive Long commentId) {
         return ResponseEntity.ok(commentService.existsById(commentId));
+    }
+
+    @GetMapping("/{commentId}/")
+    public ResponseEntity<Long> getUserIdByPostId(@PathVariable @Positive Long commentId,
+                                                  @RequestParam @Positive Long userId) {
+        return ResponseEntity.ok(commentService.getUserIdByCommentId(commentId));
     }
 }

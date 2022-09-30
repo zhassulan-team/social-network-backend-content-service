@@ -60,4 +60,10 @@ public class PostServiceImpl implements PostService {
     public Optional<Post> findByIdAndUserId(Long postId, Long userId) {
         return postRepository.findByIdAndUserId(postId, userId);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long getUserIdByPostId(Long postId) {
+        return postRepository.getUserIdById(postId).orElse(0L);
+    }
 }
