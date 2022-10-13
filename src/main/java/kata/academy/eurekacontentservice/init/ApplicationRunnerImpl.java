@@ -4,7 +4,7 @@ import kata.academy.eurekacontentservice.model.entity.Comment;
 import kata.academy.eurekacontentservice.model.entity.Post;
 import kata.academy.eurekacontentservice.service.CommentService;
 import kata.academy.eurekacontentservice.service.PostService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Component
 @Profile("dev")
 public class ApplicationRunnerImpl implements ApplicationRunner {
+
     private final PostService postService;
     private final CommentService commentService;
 
@@ -28,7 +29,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
         post1.setUserId(1L);
         post1.setTitle("The Competition");
         post1.setText("A “Share” vs. “Like” post is a great way for people to engage with your brand by offering their " +
-                        "opinion (which Facebook users love to do!). Basically, this post offers two different options.");
+                "opinion (which Facebook users love to do!). Basically, this post offers two different options.");
         post1.setCreateDate(LocalDateTime.now());
         post1.setTags(List.of("like", "post"));
         posts.add(post1);
@@ -131,7 +132,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
         post12.setTags(List.of("links", "media"));
         posts.add(post12);
 
-        for (Post post: posts) {
+        for (Post post : posts) {
             postService.addPost(post);
         }
 
@@ -347,22 +348,23 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
         comment30.setPost(posts.get(11));
         comments.add(comment30);
 
-        for (Comment comment: comments) {
+        for (Comment comment : comments) {
             commentService.addComment(comment);
         }
     }
+
     private static String getRandomText() {
         String[] adjectives = {"Good job!", "Excellent!", "Terrific!", "Interesting!", "All Right!", "Exactly right!", "Exceptional!",
                 "Fantastic!", "Exceptional!", "Wonderful!", "Outstanding!"};
         String[] additionalInfo = {"Thank you for writing this! I love it so much!!!",
-        "Excuse me while I go tell my friends about this masterpiece you have created.",
-        "THIS IS AN AMAZING FANFIC HOLY HECK I LOVE IT SO MUCH I REREAD IT IMMEDIATELY!!!",
-        "Well done, my friend, well done.",
-        "This story is written so well, the sadness/despair is well depicted; you have an excellent gift of carving and weaving emotions into your narrations.",
-        "But that was then, right?",
-        "So, game over. Blog  Stick a fork in them.",
-        "That’s the word on the street, isn’t it?",
-        "If — and this is the catch — you write a high-quality, genuinely-great blog comment worth noticing."};
+                "Excuse me while I go tell my friends about this masterpiece you have created.",
+                "THIS IS AN AMAZING FANFIC HOLY HECK I LOVE IT SO MUCH I REREAD IT IMMEDIATELY!!!",
+                "Well done, my friend, well done.",
+                "This story is written so well, the sadness/despair is well depicted; you have an excellent gift of carving and weaving emotions into your narrations.",
+                "But that was then, right?",
+                "So, game over. Blog  Stick a fork in them.",
+                "That’s the word on the street, isn’t it?",
+                "If — and this is the catch — you write a high-quality, genuinely-great blog comment worth noticing."};
         StringBuilder comment = new StringBuilder();
         String adj = adjectives[(int) (Math.random() * (adjectives.length))];
         String addInfo = additionalInfo[(int) (Math.random() * (additionalInfo.length))];
