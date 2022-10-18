@@ -1,5 +1,6 @@
 package kata.academy.eurekacontentservice.feign.fallback;
 
+import kata.academy.eurekacontentservice.exception.FeignRequestException;
 import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
 import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ record LikeServiceFallback(Throwable cause) implements LikeServiceFeignClient {
 
     @Override
     public ResponseEntity<List<Long>> getTopPostIdsByCount(Integer count) {
-        throw new NoFallbackAvailableException("Сервис временно недоступен. Причина -> %s"
+        throw new FeignRequestException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
     }
 

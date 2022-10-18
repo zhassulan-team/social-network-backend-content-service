@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import javax.validation.constraints.Positive;
 
 @RequiredArgsConstructor
 @Validated
 @RestController
-@RequestMapping("/api/internal/v1/comments")
+@RequestMapping("/api/internal/v1/content/comments")
 public class CommentInternalRestController {
 
     private final CommentService commentService;

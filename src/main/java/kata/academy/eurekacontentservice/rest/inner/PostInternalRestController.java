@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.validation.constraints.Positive;
 
 @RequiredArgsConstructor
 @Validated
 @RestController
-@RequestMapping("/api/internal/v1/posts")
+@RequestMapping("/api/internal/v1/content/posts")
 public class PostInternalRestController {
 
     private final PostService postService;

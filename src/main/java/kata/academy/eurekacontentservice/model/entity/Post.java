@@ -1,6 +1,7 @@
 package kata.academy.eurekacontentservice.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -44,12 +46,12 @@ public class Post {
     @NotBlank
     @Column(nullable = false)
     private String text;
-    
+
     private String picUrl;
 
     @NotNull
     @Column(nullable = false)
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
 
     @ElementCollection
     @CollectionTable(

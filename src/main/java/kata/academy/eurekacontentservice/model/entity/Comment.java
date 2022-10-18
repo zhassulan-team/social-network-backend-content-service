@@ -1,6 +1,7 @@
 package kata.academy.eurekacontentservice.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -41,7 +43,7 @@ public class Comment {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")

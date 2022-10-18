@@ -15,15 +15,15 @@ import java.util.List;
 @FeignClient(value = "eureka-like-service", fallbackFactory = LikeServiceFallbackFactory.class)
 public interface LikeServiceFeignClient {
 
-    @GetMapping("/api/internal/v1/posts/post-likes")
+    @GetMapping("/api/internal/v1/likes/posts")
     ResponseEntity<List<Long>> getTopPostIdsByCount(@RequestParam @Positive Integer count);
 
-    @DeleteMapping("/api/internal/v1/posts/{postId}/post-likes")
+    @DeleteMapping("/api/internal/v1/likes/posts/{postId}")
     ResponseEntity<Void> deleteByPostId(@PathVariable @Positive Long postId);
 
-    @DeleteMapping("/api/internal/v1/comments/{commentId}/comment-likes")
+    @DeleteMapping("/api/internal/v1/likes/comments/{commentId}")
     ResponseEntity<Void> deleteByCommentId(@PathVariable @Positive Long commentId);
 
-    @DeleteMapping("/api/internal/v1/comments/comment-likes")
+    @DeleteMapping("/api/internal/v1/likes/comments")
     ResponseEntity<Void> deleteAllByCommentIds(@RequestBody List<Long> commentIds);
 }
