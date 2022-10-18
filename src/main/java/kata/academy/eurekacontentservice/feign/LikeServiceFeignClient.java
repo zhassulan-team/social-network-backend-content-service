@@ -15,7 +15,7 @@ import java.util.List;
 @FeignClient(value = "eureka-like-service", fallbackFactory = LikeServiceFallbackFactory.class)
 public interface LikeServiceFeignClient {
 
-    @GetMapping("/api/internal/v1/likes/posts")
+    @GetMapping("/api/internal/v1/likes/posts/top")
     ResponseEntity<List<Long>> getTopPostIdsByCount(@RequestParam @Positive Integer count);
 
     @DeleteMapping("/api/internal/v1/likes/posts/{postId}")
