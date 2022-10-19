@@ -1,5 +1,10 @@
 package kata.academy.eurekacontentservice.rest.outer;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kata.academy.eurekacontentservice.model.converter.PostMapper;
 import kata.academy.eurekacontentservice.model.dto.PostRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Post;
@@ -29,17 +34,34 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Validated
 @RestController
+@Tag(name = "Post Rest Controller", description = "CRUD операции с постами")
 @RequestMapping("/api/v1/content/posts")
 public class PostRestController {
 
     private final PostService postService;
 
     @GetMapping
+    @ApiOperation(value = "getPostPag", notes = "Получение страницы с постами по тэгам")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение страницы с постами"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Page<Post>> getPostPage(@RequestParam(required = false) List<String> tags, Pageable pageable) {
         return ResponseEntity.ok(postService.findAllByTags(tags, pageable));
     }
 
     @GetMapping("/owner")
+    @ApiOperation(value = "getPostPageByOwner", notes = "Получение страницы с постами пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение страницы с постами пользователя"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Page<Post>> getPostPageByOwner(@RequestParam(required = false) List<String> tags,
                                                          @RequestHeader @Positive Long userId,
                                                          Pageable pageable) {
@@ -47,11 +69,27 @@ public class PostRestController {
     }
 
     @GetMapping("/top")
+    @ApiOperation(value = "getPostPageByTop", notes = "Получение топовых постов")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение топовых постов"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Page<Post>> getPostPageByTop(@RequestParam(defaultValue = "100") @Positive Integer count, Pageable pageable) {
         return ResponseEntity.ok(postService.findAllTopByCount(count, pageable));
     }
 
     @PostMapping
+    @ApiOperation(value = "addPost", notes = "Добавление поста")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное добавление поста"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Post> addPost(@RequestBody @Valid PostRequestDto dto,
                                         @RequestHeader @Positive Long userId) {
         Post post = PostMapper.toEntity(dto);
@@ -60,6 +98,14 @@ public class PostRestController {
     }
 
     @PutMapping("/{postId}")
+    @ApiOperation(value = "updatePost", notes = "Обновление поста")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное обновление поста"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Post> updatePost(@RequestBody @Valid PostRequestDto dto,
                                            @PathVariable @Positive Long postId,
                                            @RequestHeader @Positive Long userId) {
@@ -70,6 +116,14 @@ public class PostRestController {
     }
 
     @DeleteMapping("/{postId}")
+    @ApiOperation(value = "deletePost", notes = "Удаление поста")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное удаление поста"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Void> deletePost(@PathVariable @Positive Long postId,
                                            @RequestHeader @Positive Long userId) {
         ApiValidationUtil.requireTrue(postService.existsByIdAndUserId(postId, userId),

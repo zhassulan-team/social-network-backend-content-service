@@ -1,5 +1,10 @@
 package kata.academy.eurekacontentservice.rest.outer;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentResponseDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
@@ -31,6 +36,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Validated
 @RestController
+@Tag(name = "Comment Rest Controller", description = "CRUD операции с комментариями")
 @RequestMapping("/api/v1/content/posts")
 public class CommentRestController {
 
@@ -39,6 +45,14 @@ public class CommentRestController {
     private final CommentResponseDtoService commentResponseDtoService;
 
     @PostMapping("/{postId}/comments")
+    @ApiOperation(value = "addComment", notes = "Добавление комментария")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное добавление комментария"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<CommentResponseDto> addComment(@RequestParam @NotBlank String text,
                                                          @PathVariable @Positive Long postId,
                                                          @RequestHeader @Positive Long userId) {
@@ -56,6 +70,14 @@ public class CommentRestController {
     }
 
     @PutMapping("/{postId}/comments/{commentId}")
+    @ApiOperation(value = "updateComment", notes = "Обновление комментария")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное обновление комментария"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<CommentResponseDto> updateComment(@RequestParam @NotBlank String text,
                                                             @PathVariable @Positive Long postId,
                                                             @PathVariable @Positive Long commentId,
@@ -68,6 +90,14 @@ public class CommentRestController {
     }
 
     @DeleteMapping("/{postId}/comments/{commentId}")
+    @ApiOperation(value = "deleteComment", notes = "Удаление комментария")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное удаление комментария"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Void> deleteComment(@PathVariable @Positive Long postId,
                                               @PathVariable @Positive Long commentId,
                                               @RequestHeader @Positive Long userId) {
@@ -77,6 +107,14 @@ public class CommentRestController {
     }
 
     @GetMapping("/{postId}/comments")
+    @ApiOperation(value = "getCommentPage", notes = "Получение комментариев к посту")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение комментариев к посту"),
+            @ApiResponse(code = 400, message = "Ошибка клиента"),
+            @ApiResponse(code = 401, message = "Нет доступа к данной операции"),
+            @ApiResponse(code = 403, message = "Доступ к операции запрещен"),
+            @ApiResponse(code = 404, message = "Данные согласно запросу не найдены"),
+            @ApiResponse(code = 500, message = "Ошибка сервера")})
     public ResponseEntity<Page<CommentResponseDto>> getCommentPage(@PathVariable @Positive Long postId, Pageable pageable) {
         ApiValidationUtil.requireTrue(postService.existsById(postId), String.format("Пост с postId %d нет в базе данных", postId));
         return ResponseEntity.ok(commentResponseDtoService.findAllByPostId(postId, pageable));
