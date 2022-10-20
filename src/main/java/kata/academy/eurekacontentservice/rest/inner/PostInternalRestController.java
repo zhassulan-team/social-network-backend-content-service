@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,5 +23,10 @@ public class PostInternalRestController {
     @GetMapping("/{postId}/exists")
     public ResponseEntity<Boolean> existsByPostId(@PathVariable @Positive Long postId) {
         return ResponseEntity.ok(postService.existsById(postId));
+    }
+
+    @GetMapping("/{postId}/user-id")
+    public ResponseEntity<Long> getUserIdByPostId(@PathVariable @Positive Long postId) {
+        return ResponseEntity.ok(postService.findUserIdByPostId(postId));
     }
 }

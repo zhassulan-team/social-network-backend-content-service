@@ -4,6 +4,7 @@ import kata.academy.eurekacontentservice.model.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByUserId(Long userId, Pageable pageable);
 
     Optional<Post> findByIdAndUserId(Long postId, Long userId);
+
+    @Query("""
+            SELECT p.userId
+            FROM Post p
+            WHERE p.id = :postId
+                            """)
+    Long findUserIdByPostId(Long postId);
 }

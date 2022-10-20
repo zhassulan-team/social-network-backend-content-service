@@ -19,4 +19,6 @@ public interface CommentService {
     boolean existsById(Long commentId);
 
     void deleteAllByPostId(Long postId);
+
+    Long findUserIdByCommentId(Long commentId);
 }
