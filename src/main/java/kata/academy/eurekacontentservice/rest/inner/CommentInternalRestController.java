@@ -23,4 +23,9 @@ public class CommentInternalRestController {
     public ResponseEntity<Boolean> existsByCommentId(@PathVariable @Positive Long commentId) {
         return ResponseEntity.ok(commentService.existsById(commentId));
     }
+
+    @GetMapping("/{commentId}/user-id")
+    public ResponseEntity<Long> getUserIdByCommentId(@PathVariable @Positive Long commentId) {
+        return ResponseEntity.ok(commentService.findUserIdByCommentId(commentId));
+    }
 }
