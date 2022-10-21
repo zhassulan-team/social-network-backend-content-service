@@ -1,5 +1,9 @@
 package kata.academy.eurekacontentservice.rest.outer;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kata.academy.eurekacontentservice.model.converter.PostMapper;
 import kata.academy.eurekacontentservice.model.dto.PostRequestDto;
 import kata.academy.eurekacontentservice.model.entity.Post;
@@ -26,6 +30,7 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "PostRestControlle", description = "CRUD операции с постами")
 @RequiredArgsConstructor
 @Validated
 @RestController
@@ -34,11 +39,19 @@ public class PostRestController {
 
     private final PostService postService;
 
+    @ApiOperation(value = "getPostPag", notes = "Получение страницы с постами по тэгам")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение страницы с постами"),
+            @ApiResponse(code = 400, message = "Ошибка при получении страницы с постами по указанным тегам")})
     @GetMapping
     public ResponseEntity<Page<Post>> getPostPage(@RequestParam(required = false) List<String> tags, Pageable pageable) {
         return ResponseEntity.ok(postService.findAllByTags(tags, pageable));
     }
 
+    @ApiOperation(value = "getPostPageByOwner", notes = "Получение страницы с постами пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение страницы с постами пользователя"),
+            @ApiResponse(code = 400, message = "Ошибка при получении страницы с постами пользователя с указанным userId по указанным тегам")})
     @GetMapping("/owner")
     public ResponseEntity<Page<Post>> getPostPageByOwner(@RequestParam(required = false) List<String> tags,
                                                          @RequestHeader @Positive Long userId,
@@ -46,11 +59,19 @@ public class PostRestController {
         return ResponseEntity.ok(postService.findAllByUserIdAndTags(userId, tags, pageable));
     }
 
+    @ApiOperation(value = "getPostPageByTop", notes = "Получение топовых постов")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение топовых постов"),
+            @ApiResponse(code = 400, message = "Ошибка при получении страницы с указанным количеством топовых постов")})
     @GetMapping("/top")
     public ResponseEntity<Page<Post>> getPostPageByTop(@RequestParam(defaultValue = "100") @Positive Integer count, Pageable pageable) {
         return ResponseEntity.ok(postService.findAllTopByCount(count, pageable));
     }
 
+    @ApiOperation(value = "addPost", notes = "Добавление поста")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное добавление поста"),
+            @ApiResponse(code = 400, message = "Ошибка при указании параметров для добавления поста")})
     @PostMapping
     public ResponseEntity<Post> addPost(@RequestBody @Valid PostRequestDto dto,
                                         @RequestHeader @Positive Long userId) {
@@ -59,6 +80,12 @@ public class PostRestController {
         return ResponseEntity.ok(postService.addPost(post));
     }
 
+    @ApiOperation(value = "updatePost", notes = "Обновление поста")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное обновление поста"),
+            @ApiResponse(code = 400, message = "Ошибка при указании параметров для обновления поста: " +
+                    "проверьте существование поста с указанным postId и пользователя с указанным userId, " +
+                    "а также корректность заполнения тела запроса при обновлении")})
     @PutMapping("/{postId}")
     public ResponseEntity<Post> updatePost(@RequestBody @Valid PostRequestDto dto,
                                            @PathVariable @Positive Long postId,
@@ -69,6 +96,11 @@ public class PostRestController {
         return ResponseEntity.ok(postService.updatePost(PostMapper.toEntity(dto, optionalPost.get())));
     }
 
+    @ApiOperation(value = "deletePost", notes = "Удаление поста")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное удаление поста"),
+            @ApiResponse(code = 400, message = "Поста с указанным postId, созданного пользователем с указанным userId, " +
+                    "нет в базе данных")})
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable @Positive Long postId,
                                            @RequestHeader @Positive Long userId) {
