@@ -31,7 +31,7 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 
-@Tag(name = "Post Rest Controller", description = "CRUD операции с постами")
+@Tag(name = "PostRestControlle", description = "CRUD операции с постами")
 @RequiredArgsConstructor
 @Validated
 @RestController

@@ -33,7 +33,7 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Tag(name = "Comment Rest Controller", description = "CRUD операции с комментариями")
+@Tag(name = "CommentRestController", description = "CRUD операции с комментариями")
 @RequiredArgsConstructor
 @Validated
 @RestController
