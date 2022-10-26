@@ -16,6 +16,8 @@ public final class CommentMapper {
                 .text(comment.getText())
                 .postId(comment.getPost().getId())
                 .createdDate(comment.getCreatedDate())
+                .positiveLikesCount(0)
+                .negativeLikesCount(0)
                 .build();
     }
 }

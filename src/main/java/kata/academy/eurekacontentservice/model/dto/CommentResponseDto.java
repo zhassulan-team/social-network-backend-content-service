@@ -10,5 +10,7 @@ public record CommentResponseDto(
         Long userId,
         String text,
         Long postId,
-        LocalDateTime createdDate) {
+        LocalDateTime createdDate,
+        Integer positiveLikesCount,
+        Integer negativeLikesCount) {
 }
