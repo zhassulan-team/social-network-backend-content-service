@@ -21,12 +21,12 @@ public class PostInternalRestController {
     private final PostService postService;
 
     @GetMapping("/{postId}/exists")
-    public ResponseEntity<Boolean> existsByPostId(@PathVariable @Positive Long postId) {
-        return ResponseEntity.ok(postService.existsById(postId));
+    public Boolean existsByPostId(@PathVariable @Positive Long postId) {
+        return postService.existsById(postId);
     }
 
     @GetMapping("/{postId}/user-id")
-    public ResponseEntity<Long> getUserIdByPostId(@PathVariable @Positive Long postId) {
-        return ResponseEntity.ok(postService.findUserIdByPostId(postId));
+    public Long getUserIdByPostId(@PathVariable @Positive Long postId) {
+        return postService.findUserIdByPostId(postId);
     }
 }
