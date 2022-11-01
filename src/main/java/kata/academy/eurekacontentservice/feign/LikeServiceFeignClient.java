@@ -1,6 +1,7 @@
 package kata.academy.eurekacontentservice.feign;
 
 import kata.academy.eurekacontentservice.feign.fallback.LikeServiceFallbackFactory;
+import kata.academy.eurekacontentservice.model.dto.PostLikeResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -26,4 +28,7 @@ public interface LikeServiceFeignClient {
 
     @DeleteMapping("/api/internal/v1/likes/comments")
     ResponseEntity<Void> deleteAllByCommentIds(@RequestBody List<Long> commentIds);
+
+    @GetMapping("/api/internal/v1/likes/posts")
+    ResponseEntity<List<PostLikeResponseDto>> getLikesByPostsIds(@RequestParam @NotEmpty List<@Positive Long> postIds);
 }
