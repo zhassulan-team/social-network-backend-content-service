@@ -67,8 +67,7 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
     private Page<PostResponseDto> convertPageToPagePostResponseDto(Page<Post> postPage) {
         List<PostLikeResponseDto> postLikeResponseDtoList;
         postLikeResponseDtoList = likeServiceFeignClient
-                .getLikesByPostsIds(postPage.get().map(Post::getId).toList())
-                .getBody();
+                .getLikesByPostsIds(postPage.get().map(Post::getId).toList());
         return postPage.map(post -> PostMapper.toDtoWithListPostLikeDto(post, postLikeResponseDtoList));
     }
 }

@@ -34,7 +34,7 @@ record LikeServiceFallback(Throwable cause) implements LikeServiceFeignClient {
     }
 
     @Override
-    public ResponseEntity<List<PostLikeResponseDto>> getLikesByPostsIds(List<Long> postIds) {
+    public List<PostLikeResponseDto> getLikesByPostsIds(List<Long> postIds) {
         throw new FeignRequestException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
     }
