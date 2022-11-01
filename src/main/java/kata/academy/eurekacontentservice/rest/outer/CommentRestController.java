@@ -1,5 +1,9 @@
 package kata.academy.eurekacontentservice.rest.outer;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kata.academy.eurekacontentservice.model.converter.CommentMapper;
 import kata.academy.eurekacontentservice.model.dto.CommentResponseDto;
 import kata.academy.eurekacontentservice.model.entity.Comment;
@@ -28,6 +32,7 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Tag(name = "CommentRestController", description = "CRUD операции с комментариями")
 @RequiredArgsConstructor
 @Validated
 @RestController
@@ -38,6 +43,11 @@ public class CommentRestController {
     private final PostService postService;
     private final CommentResponseDtoService commentResponseDtoService;
 
+    @ApiOperation(value = "addComment", notes = "Добавление комментария")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное добавление комментария"),
+            @ApiResponse(code = 400, message = "Ошибка при вводе параметров для добавления комментария. " +
+                    "Проверьте существование поста с указанным postId и пользователя с указанным userId")})
     @PostMapping("/{postId}/comments")
     public ResponseEntity<CommentResponseDto> addComment(@RequestParam @NotBlank String text,
                                                          @PathVariable @Positive Long postId,
@@ -55,6 +65,11 @@ public class CommentRestController {
         )));
     }
 
+    @ApiOperation(value = "updateComment", notes = "Обновление комментария")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное обновление комментария"),
+            @ApiResponse(code = 400, message = "Комментария с указанным commentId, оставленного пользователем с указанным userId, " +
+                    "относящегося к посту с указанным postId, нет в базе данных")})
     @PutMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(@RequestParam @NotBlank String text,
                                                             @PathVariable @Positive Long postId,
@@ -67,6 +82,11 @@ public class CommentRestController {
         return ResponseEntity.ok(CommentMapper.toDto(commentService.updateComment(comment)));
     }
 
+    @ApiOperation(value = "deleteComment", notes = "Удаление комментария")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное удаление комментария"),
+            @ApiResponse(code = 400, message = "Комментария с указанным commentId, оставленного пользователем с указанным userId, " +
+                    "относящегося к посту с указанным postId, нет в базе данных")})
     @DeleteMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable @Positive Long postId,
                                               @PathVariable @Positive Long commentId,
@@ -76,6 +96,10 @@ public class CommentRestController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation(value = "getCommentPage", notes = "Получение комментариев к посту")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Успешное получение комментариев к посту"),
+            @ApiResponse(code = 400, message = "Поста с указанным postId нет в базе данных")})
     @GetMapping("/{postId}/comments")
     public ResponseEntity<Page<CommentResponseDto>> getCommentPage(@PathVariable @Positive Long postId, Pageable pageable) {
         ApiValidationUtil.requireTrue(postService.existsById(postId), String.format("Пост с postId %d нет в базе данных", postId));
