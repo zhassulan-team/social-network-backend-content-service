@@ -129,7 +129,6 @@ public class CommentRestControllerIT extends SpringSimpleContextTest {
         Long postId = 1L;
         Long commentId = 1L;
         Long userId = 1L;
-        doReturn(ResponseEntity.ok(Boolean.TRUE)).when(likeServiceFeignClient).deleteByCommentId(commentId);
         mockMvc.perform(delete("/api/v1/content/posts/{postId}/comments/{commentId}", postId, commentId)
                 .header("userId", userId)
                 .contentType(MediaType.APPLICATION_JSON))
