@@ -10,25 +10,25 @@ import java.util.List;
 record LikeServiceFallback(Throwable cause) implements LikeServiceFeignClient {
 
     @Override
-    public ResponseEntity<List<Long>> getTopPostIdsByCount(Integer count) {
+    public List<Long> getTopPostIdsByCount(Integer count) {
         throw new FeignRequestException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
     }
 
     @Override
-    public ResponseEntity<Void> deleteByPostId(Long postId) {
+    public void deleteByPostId(Long postId) {
         throw new FeignRequestException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
     }
 
     @Override
-    public ResponseEntity<Void> deleteByCommentId(Long commentId) {
+    public void deleteByCommentId(Long commentId) {
         throw new FeignRequestException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
     }
 
     @Override
-    public ResponseEntity<Void> deleteAllByCommentIds(List<Long> commentIds) {
+    public void deleteAllByCommentIds(List<Long> commentIds) {
         throw new FeignRequestException("Сервис временно недоступен. Причина -> %s"
                 .formatted(cause.getMessage()), cause);
     }

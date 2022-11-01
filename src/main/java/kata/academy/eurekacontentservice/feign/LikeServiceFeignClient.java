@@ -18,16 +18,16 @@ import java.util.List;
 public interface LikeServiceFeignClient {
 
     @GetMapping("/api/internal/v1/likes/posts/top")
-    ResponseEntity<List<Long>> getTopPostIdsByCount(@RequestParam @Positive Integer count);
+    List<Long> getTopPostIdsByCount(@RequestParam @Positive Integer count);
 
     @DeleteMapping("/api/internal/v1/likes/posts/{postId}")
-    ResponseEntity<Void> deleteByPostId(@PathVariable @Positive Long postId);
+    void deleteByPostId(@PathVariable @Positive Long postId);
 
     @DeleteMapping("/api/internal/v1/likes/comments/{commentId}")
-    ResponseEntity<Void> deleteByCommentId(@PathVariable @Positive Long commentId);
+    void deleteByCommentId(@PathVariable @Positive Long commentId);
 
     @DeleteMapping("/api/internal/v1/likes/comments")
-    ResponseEntity<Void> deleteAllByCommentIds(@RequestBody List<Long> commentIds);
+    void deleteAllByCommentIds(@RequestBody List<Long> commentIds);
 
     @GetMapping("/api/internal/v1/likes/posts")
     List<PostLikeResponseDto> getLikesByPostsIds(@RequestParam @NotEmpty List<@Positive Long> postIds);

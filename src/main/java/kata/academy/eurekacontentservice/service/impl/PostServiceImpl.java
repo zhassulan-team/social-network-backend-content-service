@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     @Override
     public Page<Post> findAllTopByCount(Integer count, Pageable pageable) {
-        List<Long> postIds = likeServiceFeignClient.getTopPostIdsByCount(count).getBody();
+        List<Long> postIds = likeServiceFeignClient.getTopPostIdsByCount(count);
         return postRepository.findAllByIdIn(postIds, pageable);
     }
 
