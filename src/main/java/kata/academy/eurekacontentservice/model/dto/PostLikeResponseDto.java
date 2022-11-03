@@ -7,8 +7,6 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class PostLikeResponseDto {
     Long postId;
     Integer positiveLikesCount;
