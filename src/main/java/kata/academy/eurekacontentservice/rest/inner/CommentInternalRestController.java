@@ -20,12 +20,12 @@ public class CommentInternalRestController {
     private final CommentService commentService;
 
     @GetMapping("/{commentId}/exists")
-    public ResponseEntity<Boolean> existsByCommentId(@PathVariable @Positive Long commentId) {
-        return ResponseEntity.ok(commentService.existsById(commentId));
+    public Boolean existsByCommentId(@PathVariable @Positive Long commentId) {
+        return commentService.existsById(commentId);
     }
 
     @GetMapping("/{commentId}/user-id")
-    public ResponseEntity<Long> getUserIdByCommentId(@PathVariable @Positive Long commentId) {
-        return ResponseEntity.ok(commentService.findUserIdByCommentId(commentId));
+    public Long getUserIdByCommentId(@PathVariable @Positive Long commentId) {
+        return commentService.findUserIdByCommentId(commentId);
     }
 }
