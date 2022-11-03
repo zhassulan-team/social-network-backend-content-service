@@ -51,13 +51,13 @@ public final class PostMapper {
                 .text(post.getText())
                 .createdDate(post.getCreatedDate())
                 .tags(post.getTags())
-                .positiveLikesCount(postLikeResponseDto.getPositiveLikesCount())
-                .negativeLikesCount(postLikeResponseDto.getNegativeLikesCount()).build();
+                .positiveLikesCount(postLikeResponseDto.positiveLikesCount())
+                .negativeLikesCount(postLikeResponseDto.negativeLikesCount()).build();
     }
     public static PostResponseDto toDtoWithListPostLikeDto(Post post, List<PostLikeResponseDto> postLikeResponseDtos) {
         Long id = post.getId();
         for (PostLikeResponseDto postLikeResponseDto : postLikeResponseDtos) {
-            if(id.equals(postLikeResponseDto.getPostId())) {
+            if(id.equals(postLikeResponseDto.postId())) {
                 return PostMapper.toDto(post, postLikeResponseDto);
             }
         }
