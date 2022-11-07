@@ -4,10 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record CommentLikesResponseDto(
-
         Long commentId,
-
-        Integer positiveLikesCount,
-
-        Integer negativeLikesCount) {
+        Integer positiveLikeCount,
+        Integer negativeLikeCount) {
 }
+

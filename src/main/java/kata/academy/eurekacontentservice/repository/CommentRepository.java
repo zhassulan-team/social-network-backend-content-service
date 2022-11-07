@@ -15,7 +15,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);
 
     boolean existsByIdAndPostIdAndUserId(Long commentId, Long postId, Long userId);
-
+    @Query(value = """
+            SELECT new kata.academy.eurekacontentservice.model.dto.CommentResponseDto(c.id, c.userId, c.text, c.post.id, c.createdDate, 0, 0)
+            FROM Comment c
+            WHERE c.post.id =:postId
+            """)
     Page<CommentResponseDto> findAllByPostId(Long postId, Pageable pageable);
 
     @Query("""
@@ -31,6 +35,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             WHERE c.id = :commentId
                                 """)
     Long findUserIdByCommentId(Long commentId);
-
-    List<Comment> findCommentsByPostId(Long id);
 }
+

@@ -29,5 +29,5 @@ public interface LikeServiceFeignClient {
     ResponseEntity<Void> deleteAllByCommentIds(@RequestBody List<Long> commentIds);
 
     @GetMapping("/api/internal/v1/likes/comments")
-    ResponseEntity<List<CommentLikesResponseDto>> findCommentLikeByCommentId(@RequestParam List<Long> commentIds);
+    ResponseEntity<List<CommentLikesResponseDto>> getCommentLikesByCommentId(@RequestParam List<Long> commentIds);
 }
