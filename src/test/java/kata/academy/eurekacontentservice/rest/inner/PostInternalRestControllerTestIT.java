@@ -10,12 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-class PostInternalRestControllerTestIT extends SpringSimpleContextTest {
+public class PostInternalRestControllerTestIT extends SpringSimpleContextTest {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = "/scripts/inner/PostInternalRestController/existsByCommentId_SuccessfulTest/BeforeTest.sql")
     @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/inner/PostInternalRestController/existsByCommentId_SuccessfulTest/AfterTest.sql")
-    void existsByCommentId_SuccessfulTest() throws Exception {
+    public void existsByPostId_SuccessfulTest() throws Exception {
         Long postId = 1L;
         mockMvc.perform(get("/api/internal/v1/content/posts/{postId}/exists", postId)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -24,7 +24,7 @@ class PostInternalRestControllerTestIT extends SpringSimpleContextTest {
     }
 
     @Test
-    void existsByCommentId_FailTest() throws Exception {
+    public void existsByPostId_FailTest() throws Exception {
         Long postId =1L;
         mockMvc.perform(get("/api/internal/v1/content/posts/{postId}/exists", postId)
             .contentType(MediaType.APPLICATION_JSON))
