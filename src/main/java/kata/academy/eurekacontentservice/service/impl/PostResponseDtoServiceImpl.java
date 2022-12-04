@@ -1,7 +1,7 @@
 package kata.academy.eurekacontentservice.service.impl;
 
 import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
-import kata.academy.eurekacontentservice.model.dto.PostResponseDto;
+import kata.academy.eurekacontentservice.model.dto.*;
 import kata.academy.eurekacontentservice.model.entity.Post;
 import kata.academy.eurekacontentservice.repository.PostRepository;
 import kata.academy.eurekacontentservice.service.CommentService;
@@ -56,7 +56,7 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
 
 
     private PostResponseDto convertToPostResponseDto(Post post) {
-        PostResponseDto postResponseDto = likeServiceFeignClient.getPostResponseDtoByPostId(List.of(post.getId())).get(0);
+        PostLikeResponseDto postLikeResponseDto = likeServiceFeignClient.getPostResponseDtoByPostId(List.of(post.getId())).get(0);
 
         return new PostResponseDto(
                 post.getId(),
@@ -66,7 +66,7 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
                 null,
                 post.getCreatedDate(),
                 post.getTags(),
-                postResponseDto.positiveLikesCount(),
-                postResponseDto.negativeLikesCount());
+                postLikeResponseDto.positiveLikesCount(),
+                postLikeResponseDto.negativeLikesCount());
     }
 }

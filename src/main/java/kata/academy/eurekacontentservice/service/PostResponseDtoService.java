@@ -1,11 +1,9 @@
 package kata.academy.eurekacontentservice.service;
 
-import kata.academy.eurekacontentservice.model.dto.PostRequestDto;
-import kata.academy.eurekacontentservice.model.dto.PostResponseDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import kata.academy.eurekacontentservice.model.dto.*;
+import org.springframework.data.domain.*;
 
-import java.util.List;
+import java.util.*;
 
 
 public interface PostResponseDtoService {
