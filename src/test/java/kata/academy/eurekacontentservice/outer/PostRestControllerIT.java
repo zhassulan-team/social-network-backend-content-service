@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.*;
 import kata.academy.eurekacontentservice.*;
 import kata.academy.eurekacontentservice.feign.*;
 import kata.academy.eurekacontentservice.model.dto.*;
+import org.hamcrest.core.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.*;
+import org.springframework.test.web.servlet.result.*;
 import org.springframework.util.*;
 
 import java.util.*;
@@ -58,10 +60,50 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                 .getSingleResult());
     }
 
-    //todo /api/v1/content/posts
-    //todo / getPostPage (List<String> tags, Pageable pageable)
-    //todo /owner getPostPageByOwner (List<String> tags, Long userId, Pageable pageable)
-    //todo /top getPostPageByTop(Integer count, Pageable pageable)
-    //todo /{postId} updatePost(PostRequestDto dto, Long postId, Long userId)
-    //todo /{postId} deletePost(Long postId, Long userId)
+    @Test
+    public void addPost_RequestBodyMissedTest() throws Exception {
+        long userId = 1L;
+        mockMvc.perform(post("/api/v1/content/posts")
+                        .header("userId", Long.toString(userId)))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text",
+                        Is.is("В запросе не указано тело")));
+    }
+
+    @Test
+    public void addPost_HeaderMissedTest() throws Exception {
+        String title = "title";
+        String text = "text";
+        String requestJson = String.format("{\"title\":\"%s\",\"text\":\"%s\"}", title, text);
+
+        mockMvc.perform(post("/api/v1/content/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text",
+                        Is.is("Required request header 'userId' for method parameter type Long is not present")));
+    }
+
+    @Test
+    public void addPost_RequestBodyParamMissedTest() throws Exception {
+        long userId = 1L;
+        mockMvc.perform(post("/api/v1/content/posts")
+                        .header("userId", Long.toString(userId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"title\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text",
+                        Is.is("В теле запроса допущены ошибки в следующих полях: [text]")));
+    }
+
+
+    //TODO /api/v1/content/posts
+
+    // / POST addPost (PostRequestDto dto, Long userId) (нет тела, нет поля, нет заголовка userId, успешное создание)
+
+    //todo / GET getPostPage (List<String> tags, Pageable pageable)
+    // /owner GET getPostPageByOwner (List<String> tags, Long userId, Pageable pageable)
+    // /top GET getPostPageByTop(Integer count, Pageable pageable)
+    // /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId)
+    // /{postId} DELETE deletePost(Long postId, Long userId)
 }
