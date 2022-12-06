@@ -1,18 +1,16 @@
 package kata.academy.eurekacontentservice.service.impl;
 
-import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
+import kata.academy.eurekacontentservice.feign.*;
 import kata.academy.eurekacontentservice.model.dto.*;
-import kata.academy.eurekacontentservice.model.entity.Post;
-import kata.academy.eurekacontentservice.repository.PostRepository;
-import kata.academy.eurekacontentservice.service.CommentService;
-import kata.academy.eurekacontentservice.service.PostResponseDtoService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import kata.academy.eurekacontentservice.model.entity.*;
+import kata.academy.eurekacontentservice.repository.*;
+import kata.academy.eurekacontentservice.service.*;
+import lombok.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 
 @RequiredArgsConstructor
@@ -21,7 +19,6 @@ import java.util.List;
 public class PostResponseDtoServiceImpl implements PostResponseDtoService {
 
     private final PostRepository postRepository;
-    private final CommentService commentService;
     private final LikeServiceFeignClient likeServiceFeignClient;
 
     @Transactional(readOnly = true)
@@ -56,7 +53,9 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
 
 
     private PostResponseDto convertToPostResponseDto(Post post) {
-        PostLikeResponseDto postLikeResponseDto = likeServiceFeignClient.getPostResponseDtoByPostId(List.of(post.getId())).get(0);
+        List<PostLikeResponseDto> postLikeResponseDto = likeServiceFeignClient.getPostResponseDtoByPostId(List.of(post.getId()));
+        int positiveLikes = postLikeResponseDto.size() > 0 ? postLikeResponseDto.get(0).positiveLikesCount() : 0;
+        int negativeLikes = postLikeResponseDto.size() > 0 ? postLikeResponseDto.get(0).negativeLikesCount() : 0;
 
         return new PostResponseDto(
                 post.getId(),
@@ -66,7 +65,8 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
                 null,
                 post.getCreatedDate(),
                 post.getTags(),
-                postLikeResponseDto.positiveLikesCount(),
-                postLikeResponseDto.negativeLikesCount());
+                positiveLikes,
+                negativeLikes
+        );
     }
 }
