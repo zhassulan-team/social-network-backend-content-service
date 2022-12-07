@@ -115,6 +115,9 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                         .param("size", String.valueOf(pageable.getPageSize()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.number").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].userId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value("title2"))
@@ -122,8 +125,7 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].positiveLikesCount").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].negativeLikesCount").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].createdDate").value("2022-12-06T16:00:00.000005"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].tags", Is.is(List.of("tag2"))))
-        ;
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].tags", Is.is(List.of("tag2"))));
     }
 
 
