@@ -102,6 +102,7 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
     @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPage_SuccessfulTest/After.sql")
     public void getPostPage_SuccessfulTest() throws Exception {
         String tags = "tag1,tag2";
+        //todo реализовать без тегов
         Pageable pageable = PageRequest.of(1, 1);
 
         doReturn(List.of(new PostLikeResponseDto(1L, 2, 0)))
@@ -132,6 +133,7 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByOwner_SuccessfulTest/Before.sql")
     @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByOwner_SuccessfulTest/After.sql")
     public void getPostPageByOwner_SuccessfulTest() throws Exception {
+        //todo реализовать без тегов
         String tags = "tag1,tag2";
         long userId = 1;
         Pageable pageable = PageRequest.of(0, 1);
@@ -159,13 +161,37 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].tags", Is.is(List.of("tag1"))));
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByTop_TotalElementsTest/Before.sql")
+    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByTop_TotalElementsTest/After.sql")
+    public void getPostPageByTop_TotalElementsTest() throws Exception {
+        int count = 1;
+
+        doReturn(List.of(new PostLikeResponseDto(1L, 1, 0)))
+                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(1L));
+        doReturn(List.of(new PostLikeResponseDto(2L, 2, 1)))
+                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(2L));
+
+        doReturn(List.of(2L)).when(likeServiceFeignClient).getTopPostIdsByCount(count);
+
+        mockMvc.perform(get("/api/v1/content/posts/top")
+                        .param("count", String.valueOf(count))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size").value(20))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.number").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(2));
+    }
+
 
     //TODO /api/v1/content/posts
 
     // / POST addPost (PostRequestDto dto, Long userId) (нет тела, нет поля, нет заголовка userId, успешное создание)
     // / GET getPostPage (List<String> tags, Pageable pageable) (успешное получение 2-й страницы ответа)
     // /owner GET getPostPageByOwner (List<String> tags, Long userId, Pageable pageable) (успешное получение 2-й страницы ответа)
-    //todo /top GET getPostPageByTop(Integer count, Pageable pageable)
-    // /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId)
+    // /top GET getPostPageByTop(Integer count, Pageable pageable) (корректное количество записей в ответе)
+    //todo /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId)
     // /{postId} DELETE deletePost(Long postId, Long userId)
 }
