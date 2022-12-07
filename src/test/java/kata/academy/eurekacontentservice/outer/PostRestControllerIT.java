@@ -128,13 +128,44 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].tags", Is.is(List.of("tag2"))));
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByOwner_SuccessfulTest/Before.sql")
+    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByOwner_SuccessfulTest/After.sql")
+    public void getPostPageByOwner_SuccessfulTest() throws Exception {
+        String tags = "tag1,tag2";
+        long userId = 1;
+        Pageable pageable = PageRequest.of(0, 1);
+
+        doReturn(List.of(new PostLikeResponseDto(1L, 2, 0)))
+                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(1L));
+
+        mockMvc.perform(get("/api/v1/content/posts/owner")
+                        .header("userId", String.valueOf(userId))
+                        .param("tags", tags)
+                        .param("page", String.valueOf(pageable.getPageNumber()))
+                        .param("size", String.valueOf(pageable.getPageSize()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.number").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].userId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value("title1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].text").value("text1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].positiveLikesCount").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].negativeLikesCount").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].createdDate").value("2022-12-06T16:00:00.000001"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].tags", Is.is(List.of("tag1"))));
+    }
+
 
     //TODO /api/v1/content/posts
 
     // / POST addPost (PostRequestDto dto, Long userId) (нет тела, нет поля, нет заголовка userId, успешное создание)
     // / GET getPostPage (List<String> tags, Pageable pageable) (успешное получение 2-й страницы ответа)
-    //todo /owner GET getPostPageByOwner (List<String> tags, Long userId, Pageable pageable)
-    // /top GET getPostPageByTop(Integer count, Pageable pageable)
+    // /owner GET getPostPageByOwner (List<String> tags, Long userId, Pageable pageable) (успешное получение 2-й страницы ответа)
+    //todo /top GET getPostPageByTop(Integer count, Pageable pageable)
     // /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId)
     // /{postId} DELETE deletePost(Long postId, Long userId)
 }
