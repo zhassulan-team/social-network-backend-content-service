@@ -235,6 +235,39 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                         .value(String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId)));
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = "/scripts/outer/PostRestController/deletePost_CorrectTest/Before.sql")
+    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/deletePost_CorrectTest/After.sql")
+    public void deletePost_CorrectTest() throws Exception {
+        long postId = 1;
+        long userId = 1;
+
+        mockMvc.perform(delete("/api/v1/content/posts/{postId}", postId)
+                        .header("userId", String.valueOf(userId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        assertFalse(entityManager.createQuery("""
+                        SELECT COUNT(p.id) > 0
+                        FROM Post p
+                        WHERE p.userId = :userId
+                        """, Boolean.class)
+                .setParameter("userId", userId)
+                .getSingleResult());
+    }
+
+    @Test
+    public void deletePost_NotExistsTest() throws Exception {
+        long postId = 1;
+        long userId = 1;
+
+        mockMvc.perform(delete("/api/v1/content/posts/{postId}", postId)
+                        .header("userId", String.valueOf(userId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text")
+                        .value(String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId)));
+    }
+
 
     //TODO /api/v1/content/posts
 
@@ -243,5 +276,5 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
     // /owner GET getPostPageByOwner (List<String> tags, Long userId, Pageable pageable) (успешное получение 2-й страницы ответа)
     // /top GET getPostPageByTop(Integer count, Pageable pageable) (корректное количество записей в ответе)
     // /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId) (корректное обновление, обновлять нечего)
-    //todo /{postId} DELETE deletePost(Long postId, Long userId)
+    // /{postId} DELETE deletePost(Long postId, Long userId) (корректное обновление, обновлять нечего)
 }
