@@ -1,24 +1,34 @@
 package kata.academy.eurekacontentservice.outer;
 
-import com.fasterxml.jackson.databind.*;
-import kata.academy.eurekacontentservice.*;
-import kata.academy.eurekacontentservice.feign.*;
-import kata.academy.eurekacontentservice.model.dto.*;
-import org.hamcrest.core.*;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.test.mock.mockito.*;
-import org.springframework.data.domain.*;
-import org.springframework.http.*;
-import org.springframework.test.context.jdbc.*;
-import org.springframework.test.web.servlet.result.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import kata.academy.eurekacontentservice.SpringSimpleContextTest;
+import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
+import kata.academy.eurekacontentservice.model.dto.PostLikeResponseDto;
+import kata.academy.eurekacontentservice.model.dto.PostRequestDto;
+import org.hamcrest.core.Is;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockBeans;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.*;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @MockBeans({
         @MockBean(LikeServiceFeignClient.class)
