@@ -267,14 +267,4 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.text")
                         .value(String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId)));
     }
-
-
-    //TODO /api/v1/content/posts
-
-    // / POST addPost (PostRequestDto dto, Long userId) (нет тела, нет поля, нет заголовка userId, успешное создание)
-    // / GET getPostPage (List<String> tags, Pageable pageable) (успешное получение 2-й страницы ответа)
-    // /owner GET getPostPageByOwner (List<String> tags, Long userId, Pageable pageable) (успешное получение 2-й страницы ответа)
-    // /top GET getPostPageByTop(Integer count, Pageable pageable) (корректное количество записей в ответе)
-    // /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId) (корректное обновление, обновлять нечего)
-    // /{postId} DELETE deletePost(Long postId, Long userId) (корректное обновление, обновлять нечего)
 }
