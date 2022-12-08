@@ -17,14 +17,13 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class PostResponseDtoServiceImpl implements PostResponseDtoService {
 
     private final PostRepository postRepository;
     private final LikeServiceFeignClient likeServiceFeignClient;
 
-    @Transactional(readOnly = true)
     @Override
     public Page<PostResponseDto> findAllByTags(List<String> tags, Pageable pageable) {
         if (tags == null || tags.isEmpty()) {
@@ -33,7 +32,6 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
         return convertToPostResponseDtos(postRepository.findAllDistinctByTagsIn(tags, pageable));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Page<PostResponseDto> findAllByUserIdAndTags(Long userId, List<String> tags, Pageable pageable) {
         if (tags == null || tags.isEmpty()) {
@@ -42,7 +40,6 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
         return convertToPostResponseDtos(postRepository.findAllDistinctByUserIdAndTagsIn(userId, tags, pageable));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Page<PostResponseDto> findAllTopByCount(Integer count, Pageable pageable) {
         List<Long> postIds = likeServiceFeignClient.getTopPostIdsByCount(count);
