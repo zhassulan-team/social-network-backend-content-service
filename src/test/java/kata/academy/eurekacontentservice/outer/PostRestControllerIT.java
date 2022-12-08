@@ -185,6 +185,56 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(2));
     }
 
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = "/scripts/outer/PostRestController/updatePost_CorrectTest/Before.sql")
+    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/updatePost_CorrectTest/After.sql")
+    public void updatePost_CorrectTest() throws Exception {
+        long postId = 1;
+        long userId = 1;
+        String title = "titleNew";
+        String text = "textNew";
+        String tag = "tagNew";
+        List<String> tags = List.of(tag);
+        PostRequestDto dto = new PostRequestDto(title, text, tags);
+
+        mockMvc.perform(put("/api/v1/content/posts/{postId}", postId)
+                        .header("userId", String.valueOf(userId))
+                        .content(objectMapper.writeValueAsString(dto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        assertEquals(entityManager.createQuery("""
+                        SELECT p.id
+                        FROM Post p
+                        WHERE p.userId = :userId
+                        AND p.title = :title
+                        AND p.text = :text
+                        """, Long.class)
+                .setParameter("userId", userId)
+                .setParameter("title", title)
+                .setParameter("text", text)
+                .getSingleResult()
+                .longValue(), postId);
+    }
+
+    @Test
+    public void updatePost_NotExistsTest() throws Exception {
+        long postId = 1;
+        long userId = 1;
+        String title = "title1";
+        String text = "text1";
+        String tag = "tag1";
+        List<String> tags = List.of(tag);
+        PostRequestDto dto = new PostRequestDto(title, text, tags);
+
+        mockMvc.perform(put("/api/v1/content/posts/{postId}", postId)
+                        .header("userId", String.valueOf(userId))
+                        .content(objectMapper.writeValueAsString(dto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text")
+                        .value(String.format("Пост с postId %d и userId %d нет в базе данных", postId, userId)));
+    }
+
 
     //TODO /api/v1/content/posts
 
@@ -192,6 +242,6 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
     // / GET getPostPage (List<String> tags, Pageable pageable) (успешное получение 2-й страницы ответа)
     // /owner GET getPostPageByOwner (List<String> tags, Long userId, Pageable pageable) (успешное получение 2-й страницы ответа)
     // /top GET getPostPageByTop(Integer count, Pageable pageable) (корректное количество записей в ответе)
-    //todo /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId)
-    // /{postId} DELETE deletePost(Long postId, Long userId)
+    // /{postId} PUT updatePost(PostRequestDto dto, Long postId, Long userId) (корректное обновление, обновлять нечего)
+    //todo /{postId} DELETE deletePost(Long postId, Long userId)
 }
