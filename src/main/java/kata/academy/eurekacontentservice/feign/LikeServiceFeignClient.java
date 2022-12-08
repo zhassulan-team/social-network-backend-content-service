@@ -1,7 +1,7 @@
 package kata.academy.eurekacontentservice.feign;
 
 import kata.academy.eurekacontentservice.feign.fallback.LikeServiceFallbackFactory;
-import kata.academy.eurekacontentservice.model.dto.*;
+import kata.academy.eurekacontentservice.model.dto.PostLikeResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,5 +28,5 @@ public interface LikeServiceFeignClient {
     void deleteAllByCommentIds(@RequestBody List<Long> commentIds);
 
     @GetMapping("/api/internal/v1/likes/posts")
-    List<PostLikeResponseDto> getPostResponseDtoByPostId(@RequestParam List<Long> postIds);
+    List<PostLikeResponseDto> getPostLikeResponseDtoByPostId(@RequestParam List<Long> postIds);
 }

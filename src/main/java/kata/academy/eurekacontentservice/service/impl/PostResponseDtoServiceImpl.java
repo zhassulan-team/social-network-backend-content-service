@@ -1,16 +1,19 @@
 package kata.academy.eurekacontentservice.service.impl;
 
-import kata.academy.eurekacontentservice.feign.*;
-import kata.academy.eurekacontentservice.model.dto.*;
-import kata.academy.eurekacontentservice.model.entity.*;
-import kata.academy.eurekacontentservice.repository.*;
-import kata.academy.eurekacontentservice.service.*;
-import lombok.*;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.*;
+import kata.academy.eurekacontentservice.feign.LikeServiceFeignClient;
+import kata.academy.eurekacontentservice.model.converter.PostResponseDtoMapper;
+import kata.academy.eurekacontentservice.model.dto.PostLikeResponseDto;
+import kata.academy.eurekacontentservice.model.dto.PostResponseDto;
+import kata.academy.eurekacontentservice.model.entity.Post;
+import kata.academy.eurekacontentservice.repository.PostRepository;
+import kata.academy.eurekacontentservice.service.PostResponseDtoService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -25,48 +28,34 @@ public class PostResponseDtoServiceImpl implements PostResponseDtoService {
     @Override
     public Page<PostResponseDto> findAllByTags(List<String> tags, Pageable pageable) {
         if (tags == null || tags.isEmpty()) {
-            return postRepository.findAll(pageable)
-                    .map(this::convertToPostResponseDto);
+            return convertToPostResponseDtos(postRepository.findAll(pageable));
         }
-        return postRepository.findAllDistinctByTagsIn(tags, pageable)
-                .map(this::convertToPostResponseDto);
+        return convertToPostResponseDtos(postRepository.findAllDistinctByTagsIn(tags, pageable));
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<PostResponseDto> findAllByUserIdAndTags(Long userId, List<String> tags, Pageable pageable) {
         if (tags == null || tags.isEmpty()) {
-            return postRepository.findAllByUserId(userId, pageable)
-                    .map(this::convertToPostResponseDto);
+            return convertToPostResponseDtos(postRepository.findAllByUserId(userId, pageable));
         }
-        return postRepository.findAllDistinctByUserIdAndTagsIn(userId, tags, pageable)
-                .map(this::convertToPostResponseDto);
+        return convertToPostResponseDtos(postRepository.findAllDistinctByUserIdAndTagsIn(userId, tags, pageable));
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<PostResponseDto> findAllTopByCount(Integer count, Pageable pageable) {
         List<Long> postIds = likeServiceFeignClient.getTopPostIdsByCount(count);
-        return postRepository.findAllByIdIn(postIds, pageable)
-                .map(this::convertToPostResponseDto);
+        return convertToPostResponseDtos(postRepository.findAllByIdIn(postIds, pageable));
     }
 
+    private Page<PostResponseDto> convertToPostResponseDtos(Page<Post> posts) {
+        List<Long> ids = posts.map(Post::getId).toList();
+        List<PostLikeResponseDto> postLikeResponseDtos = likeServiceFeignClient.getPostLikeResponseDtoByPostId(ids);
 
-    private PostResponseDto convertToPostResponseDto(Post post) {
-        List<PostLikeResponseDto> postLikeResponseDto = likeServiceFeignClient.getPostResponseDtoByPostId(List.of(post.getId()));
-        int positiveLikes = postLikeResponseDto.size() > 0 ? postLikeResponseDto.get(0).positiveLikesCount() : 0;
-        int negativeLikes = postLikeResponseDto.size() > 0 ? postLikeResponseDto.get(0).negativeLikesCount() : 0;
-
-        return new PostResponseDto(
-                post.getId(),
-                post.getUserId(),
-                post.getTitle(),
-                post.getText(),
-                null,
-                post.getCreatedDate(),
-                post.getTags(),
-                positiveLikes,
-                negativeLikes
+        return posts.map(p -> PostResponseDtoMapper.combine(p,
+                postLikeResponseDtos.stream().filter(dto -> dto.postId() == p.getId())
+                        .findFirst().orElse(new PostLikeResponseDto(p.getId(), 0, 0)))
         );
     }
 }

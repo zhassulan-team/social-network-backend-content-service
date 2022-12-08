@@ -112,13 +112,12 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
     @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPage_SuccessfulTest/After.sql")
     public void getPostPage_SuccessfulTest() throws Exception {
         String tags = "tag1,tag2";
-        //todo реализовать без тегов
         Pageable pageable = PageRequest.of(1, 1);
 
         doReturn(List.of(new PostLikeResponseDto(1L, 2, 0)))
-                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(1L));
+                .when(likeServiceFeignClient).getPostLikeResponseDtoByPostId(List.of(1L));
         doReturn(List.of(new PostLikeResponseDto(2L, 0, 1)))
-                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(2L));
+                .when(likeServiceFeignClient).getPostLikeResponseDtoByPostId(List.of(2L));
 
         mockMvc.perform(get("/api/v1/content/posts")
                         .param("tags", tags)
@@ -143,13 +142,12 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByOwner_SuccessfulTest/Before.sql")
     @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, value = "/scripts/outer/PostRestController/getPostPageByOwner_SuccessfulTest/After.sql")
     public void getPostPageByOwner_SuccessfulTest() throws Exception {
-        //todo реализовать без тегов
         String tags = "tag1,tag2";
         long userId = 1;
         Pageable pageable = PageRequest.of(0, 1);
 
         doReturn(List.of(new PostLikeResponseDto(1L, 2, 0)))
-                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(1L));
+                .when(likeServiceFeignClient).getPostLikeResponseDtoByPostId(List.of(1L));
 
         mockMvc.perform(get("/api/v1/content/posts/owner")
                         .header("userId", String.valueOf(userId))
@@ -178,9 +176,9 @@ public class PostRestControllerIT extends SpringSimpleContextTest {
         int count = 1;
 
         doReturn(List.of(new PostLikeResponseDto(1L, 1, 0)))
-                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(1L));
+                .when(likeServiceFeignClient).getPostLikeResponseDtoByPostId(List.of(1L));
         doReturn(List.of(new PostLikeResponseDto(2L, 2, 1)))
-                .when(likeServiceFeignClient).getPostResponseDtoByPostId(List.of(2L));
+                .when(likeServiceFeignClient).getPostLikeResponseDtoByPostId(List.of(2L));
 
         doReturn(List.of(2L)).when(likeServiceFeignClient).getTopPostIdsByCount(count);
 
