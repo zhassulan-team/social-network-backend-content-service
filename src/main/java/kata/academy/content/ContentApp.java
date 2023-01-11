@@ -12,5 +12,6 @@ public class ContentApp {
 
     public static void main(String[] args) {
         SpringApplication.run(ContentApp.class, args);
+        System.out.println();
     }
 }
